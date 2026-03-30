@@ -615,6 +615,101 @@ body {
   background: color-mix(in srgb, var(--primary) 82%, #000);
 }
 
+.wordle-hero {
+  border-bottom: 1px solid var(--border);
+}
+
+.wordle-shell {
+  display: grid;
+  gap: 1rem;
+}
+
+.wordle-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.wordle-label {
+  font-weight: 700;
+}
+
+.wordle-input {
+  min-width: 150px;
+  padding: 0.56rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  text-transform: lowercase;
+}
+
+.wordle-input::placeholder {
+  color: var(--text-soft);
+}
+
+.wordle-board {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.wordle-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 58px));
+  gap: 0.55rem;
+}
+
+.wordle-tile {
+  width: 58px;
+  height: 58px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-soft) 82%, var(--surface));
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.wordle-tile.is-gray {
+  background: color-mix(in srgb, var(--text-soft) 28%, var(--surface));
+  color: var(--text);
+}
+
+.wordle-tile.is-yellow {
+  background: #b59f3b;
+  border-color: #b59f3b;
+  color: #ffffff;
+}
+
+.wordle-tile.is-green {
+  background: #538d4e;
+  border-color: #538d4e;
+  color: #ffffff;
+}
+
+.wordle-results {
+  margin-top: 0.25rem;
+}
+
+.wordle-pre {
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 0.7rem;
+  max-height: 340px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 @media (max-width: 920px) {
   .grid-3,
   .grid-2,
@@ -674,6 +769,23 @@ body {
 
   .hero-slideshow .container {
     padding-inline: 0.8rem;
+  }
+
+  .wordle-controls {
+    align-items: stretch;
+  }
+
+  .wordle-input {
+    width: 100%;
+  }
+
+  .wordle-row {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .wordle-tile {
+    width: 100%;
+    aspect-ratio: 1 / 1;
   }
 }
 

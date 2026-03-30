@@ -1,86 +1,103 @@
-<!DOCTYPE html>
-<html lang="nl">
+<!doctype html>
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <title>Wordle Solver Pro</title>
-
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #121213;
-            color: white;
-            text-align: center;
-        }
-
-        h1 {
-            margin-top: 20px;
-        }
-
-        .board {
-            display: grid;
-            grid-template-columns: repeat(5, 60px);
-            gap: 8px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .tile {
-            width: 60px;
-            height: 60px;
-            border: 2px solid #3a3a3c;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-
-        .tile.gray { background: #3a3a3c; }
-        .tile.yellow { background: #b59f3b; }
-        .tile.green { background: #538d4e; }
-
-        input {
-            padding: 10px;
-            width: 200px;
-            text-align: center;
-            font-size: 18px;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-        }
-
-        .results {
-            max-width: 500px;
-            margin: auto;
-            text-align: left;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Private Wordle helper page for Stef Smits." />
+  <title>Wordle | Utility</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
+<body data-page="wordle">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img class="brand-logo" src="favicon.svg" alt="" aria-hidden="true" />
+        <span>Stef Smits</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a class="nav-link" data-nav="home" href="index.html">Home</a>
+        <a class="nav-link" data-nav="about" href="about.html">About</a>
+        <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
+        <a class="nav-link" data-nav="cv" href="cv.html">CV</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+        <span class="theme-switch" aria-hidden="true">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+          <span class="theme-thumb"><i class="fa-solid fa-sun theme-thumb-icon" aria-hidden="true"></i></span>
+        </span>
+      </button>
+    </div>
+  </header>
 
-<h1>Wordle Solver</h1>
+  <main>
+    <section class="hero section-blue wordle-hero">
+      <div class="container">
+        <p class="hero-kicker">Private Utility</p>
+        <h1 class="hero-title">Wordle Solver</h1>
+        <p class="hero-text">Enter a 5-letter guess, click tiles to set feedback (gray/yellow/green), then calculate matching words and best next move.</p>
+      </div>
+    </section>
 
-<input id="guessInput" maxlength="5" placeholder="typ woord">
-<br>
-<button onclick="addGuess()">Voeg gok toe</button>
+    <section class="section section-green">
+      <div class="container">
+        <div class="card wordle-shell">
+          <div class="wordle-controls" role="group" aria-label="Wordle controls">
+            <label class="wordle-label" for="guessInput">Guess</label>
+            <input id="guessInput" class="wordle-input" maxlength="5" placeholder="enter word" autocomplete="off" />
+            <button class="button-link button-compact" type="button" onclick="addGuess()">
+              <i class="fa-solid fa-plus" aria-hidden="true"></i> Add Guess
+            </button>
+            <button class="button-link button-link-secondary button-compact" type="button" onclick="solve()">
+              <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Solve
+            </button>
+            <button class="button-link button-compact" type="button" onclick="resetBoard()">
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset
+            </button>
+          </div>
 
-<div id="board"></div>
+          <div id="board" class="wordle-board" aria-live="polite"></div>
 
-<button onclick="solve()">Solve</button>
+          <div class="grid grid-2 wordle-results">
+            <article class="card">
+              <h3>Possible words</h3>
+              <pre id="possible" class="wordle-pre"></pre>
+            </article>
+            <article class="card">
+              <h3>Best guess</h3>
+              <pre id="best" class="wordle-pre"></pre>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-<div class="results">
-    <h3>Mogelijke woorden</h3>
-    <pre id="possible"></pre>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <p class="footer-title">Stef Smits</p>
+        <p class="footer-subtitle">IT Student | Applied Computer Science</p>
+        <p class="footer-meta">Building practical, user-focused digital solutions.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="cv.html">CV</a>
+      </div>
+      <div class="footer-social">
+        <a class="footer-icon-link" href="mailto:more.dtail@gmail.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
+        <a class="footer-icon-link" href="https://www.linkedin.com/in/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
+        <a class="footer-icon-link" href="https://github.com/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </footer>
 
-    <h3>Beste gok</h3>
-    <pre id="best"></pre>
-</div>
-
-<script>
+  <script>
     let guesses = [];
 
     const WORDS = [
@@ -111,58 +128,79 @@
         "zebra", "zesty", "zonal",
     ];
 
-    // maak rij
     function createRow(word) {
-        const row = document.createElement("div");
-        row.className = "board";
+      const row = document.createElement("div");
+      row.className = "wordle-row";
 
-        for (let i = 0; i < 5; i++) {
-            const tile = document.createElement("div");
-            tile.className = "tile gray"; // standaard grijs
-            tile.textContent = word[i];
+      // Store state for each tile in this row
+      const tileStates = Array(5).fill(0); // 0=gray, 1=yellow, 2=green
 
-            let state = 0; // 0 gray, 1 yellow, 2 green
+      for (let i = 0; i < 5; i++) {
+        const tile = document.createElement("button");
+        tile.type = "button";
+        tile.className = "wordle-tile is-gray";
+        tile.textContent = word[i].toUpperCase();
+        tile.setAttribute("data-state", "0");
 
-            tile.onclick = () => {
-                state = (state + 1) % 3;
-                tile.className = "tile";
-                if (state === 0) tile.classList.add("gray");
-                if (state === 1) tile.classList.add("yellow");
-                if (state === 2) tile.classList.add("green");
-            };
+        tile.addEventListener("click", (e) => {
+          e.preventDefault();
+          // Cycle: gray (0) -> yellow (1) -> green (2) -> gray (0)
+          tileStates[i] = (tileStates[i] + 1) % 3;
 
-            row.appendChild(tile);
-        }
+          tile.setAttribute("data-state", tileStates[i]);
+          tile.className = "wordle-tile";
+          if (tileStates[i] === 0) {
+            tile.classList.add("is-gray");
+          } else if (tileStates[i] === 1) {
+            tile.classList.add("is-yellow");
+          } else if (tileStates[i] === 2) {
+            tile.classList.add("is-green");
+          }
+        });
 
-        document.getElementById("board").appendChild(row);
+        row.appendChild(tile);
+      }
+
+      document.getElementById("board").appendChild(row);
     }
 
     function addGuess() {
-        const word = document.getElementById("guessInput").value.toLowerCase();
-        if (word.length !== 5) return;
+      const input = document.getElementById("guessInput");
+      const word = input.value.trim().toLowerCase();
+      if (!/^[a-z]{5}$/.test(word)) return;
 
-        guesses.push(word);
-        createRow(word);
+      guesses.push(word);
+      createRow(word);
+      input.value = "";
+      input.focus();
+    }
 
-        document.getElementById("guessInput").value = "";
+    function resetBoard() {
+      guesses = [];
+      document.getElementById("board").innerHTML = "";
+      document.getElementById("possible").textContent = "";
+      document.getElementById("best").textContent = "";
+      document.getElementById("guessInput").focus();
     }
 
     function getPatterns() {
-        const rows = document.querySelectorAll(".board");
-        let patterns = [];
+      const rows = document.querySelectorAll(".wordle-row");
+      const patterns = [];
 
-        rows.forEach((row, i) => {
-            let pattern = "";
-            row.childNodes.forEach(tile => {
-                if (tile.classList.contains("green")) pattern += "g";
-                else if (tile.classList.contains("yellow")) pattern += "y";
-                else pattern += "b";
-            });
-
-            patterns.push({ guess: guesses[i], pattern });
+      rows.forEach((row, i) => {
+        let pattern = "";
+        const tiles = row.querySelectorAll(".wordle-tile");
+        tiles.forEach((tile) => {
+          const state = tile.getAttribute("data-state");
+          if (state === "2") pattern += "g";
+          else if (state === "1") pattern += "y";
+          else pattern += "b";
         });
 
-        return patterns;
+        patterns.push({ guess: guesses[i], pattern });
+      });
+
+      return patterns;
     }
 
     function buildPattern(guess, target) {
@@ -192,7 +230,6 @@
         return pattern.join("");
     }
 
-    // 🔥 jouw originele logica
     function entropy(guess, words) {
         let pc = {};
 
@@ -223,7 +260,6 @@
         return Math.max(...Object.values(pc));
     }
 
-    // 🔥 exact jouw selectie (maar 1 woord)
     function bestGuess(words) {
         let bestWord = null;
         let bestScore = null;
@@ -245,22 +281,26 @@
     }
 
     function solve() {
-        let patterns = getPatterns();
-        let filtered = WORDS;
+      const patterns = getPatterns();
+      let filtered = WORDS;
 
-        for (let g of patterns) {
-            filtered = filtered.filter(w =>
-                buildPattern(g.guess, w) === g.pattern
-            );
-        }
+      for (const g of patterns) {
+        filtered = filtered.filter((w) => buildPattern(g.guess, w) === g.pattern);
+      }
 
-        document.getElementById("possible").textContent =
-            filtered.join("\n");
-
-        document.getElementById("best").textContent =
-            bestGuess(filtered) || "geen resultaat";
+      document.getElementById("possible").textContent = filtered.join("\n");
+      document.getElementById("best").textContent = bestGuess(filtered) || "no result";
     }
-</script>
 
+    document.getElementById("guessInput").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addGuess();
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
