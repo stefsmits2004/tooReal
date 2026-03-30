@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Stef Smits monogram">
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2c79b5"/>
+      <stop offset="100%" stop-color="#2a8b65"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#1f2732"/>
+  <path d="M18 21c0-4.8 3.8-8 9.4-8H45v6H27.6c-1.8 0-2.8.9-2.8 2.2s1 2.1 2.8 2.1h10c5.5 0 9.4 3.1 9.4 8.2S43 40 37.6 40H19.2v-6h18.3c1.8 0 2.8-.8 2.8-2.1s-1-2.2-2.8-2.2h-10c-5.6 0-9.5-3.2-9.5-8.7z" fill="url(#accent)"/>
+</svg>
