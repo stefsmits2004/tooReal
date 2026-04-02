@@ -19,21 +19,67 @@
   let board = [];
   let solverGuesses = [];
   let solverCurrentInput = "";
+  let WORDS = []; // Will be loaded from file
+  let wordsLoaded = false; // Track if words have been loaded
   let firstGuess = (localStorage.getItem("wdl_first_guess") || "least").toLowerCase();
+  
+  // Validate stored first guess, reset to default if invalid
+  if (!firstGuess || !/^[a-z]{5}$/.test(firstGuess)) {
+    firstGuess = "least";
+  }
 
   const settings = JSON.parse(localStorage.getItem("wdl_settings") || "{}");
   if (settings.hardMode === undefined) settings.hardMode = false;
   if (settings.darkMode === undefined) settings.darkMode = "system";
   if (settings.colorBlind === undefined) settings.colorBlind = false;
+  if (settings.useFirstGuess === undefined) settings.useFirstGuess = true;
 
   let stats = JSON.parse(localStorage.getItem("wdl_stats") || JSON.stringify({
     played: 0, won: 0, streak: 0, maxStreak: 0, dist: [0,0,0,0,0,0]
   }));
 
   /* =========================================================
+     WORD LIST LOADER
+     ========================================================= */
+  async function loadWordsFromFile() {
+    try {
+      const response = await fetch("assets/wordle/5words.txt");
+      if (!response.ok) {
+        throw new Error(`Failed to load word list: ${response.status}`);
+      }
+      const text = await response.text();
+      // Parse words: split by newline, trim whitespace, filter empty lines, convert to lowercase
+      WORDS = text
+        .split('\n')
+        .map(word => word.trim().toLowerCase())
+        .filter(word => word.length === WORD_LEN && /^[a-z]+$/.test(word));
+      
+      if (WORDS.length === 0) {
+        throw new Error("No valid words found in word list");
+      }
+      
+      wordsLoaded = true;
+      console.log(`Loaded ${WORDS.length} words from 5words.txt`);
+      return true;
+    } catch (error) {
+      console.error("Error loading word list:", error);
+      // Fallback: show error to user
+      showToast("Error loading word list. Please refresh the page.");
+      return false;
+    }
+  }
+
+  /* =========================================================
      BOOT
      ========================================================= */
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Load words first before initializing game
+    const wordsReady = await loadWordsFromFile();
+    if (!wordsReady) {
+      console.error("Failed to load words, aborting initialization");
+      return;
+    }
+
     applySettings();
     buildBoard();
     buildKeyboard();
@@ -162,13 +208,15 @@
     currentCol = 0;
     gameOver = false;
     currentGuess = [];
+    solverGuesses = [];
     buildBoard();
     resetKeyboardColors();
     hideSolverPanel();
+    removeSolverResetButton();
     document.getElementById("word-reveal").style.display = "none";
     document.getElementById("play-again-btn").classList.remove("visible");
 
-    if (firstGuess && /^[a-z]{5}$/.test(firstGuess)) {
+    if (settings.useFirstGuess && firstGuess && /^[a-z]{5}$/.test(firstGuess) && WORDS.includes(firstGuess)) {
       const fg = firstGuess.toUpperCase();
       for (let i = 0; i < 5; i++) {
         board[0][i].letter = fg[i];
@@ -271,7 +319,14 @@
         }, 250);
       }, i * DELAY);
     });
-    setTimeout(cb, 4 * DELAY + 350);
+    setTimeout(() => {
+      // Store guess and pattern for solver in play mode
+      if (mode === "play") {
+        solverGuesses[rowIdx] = { word: word.toLowerCase(), pattern: pattern };
+        solveCalc();
+      }
+      cb();
+    }, 4 * DELAY + 350);
   }
 
   function validateHardMode(word) {
@@ -318,6 +373,12 @@
   }
 
   function commitSolverGuess(word) {
+    const wordListUpper = WORDS.map(w => w.toUpperCase());
+    if (!wordListUpper.includes(word.toUpperCase())) { 
+      shakeRow(currentRow); 
+      showToast("Not in word list"); 
+      return; 
+    }
     for (let c = 0; c < WORD_LEN; c++) {
       board[currentRow][c].letter = word[c].toUpperCase();
       board[currentRow][c].state = 0;
@@ -417,16 +478,17 @@
       item.className = "best-guess-item";
       item.innerHTML = `
         <span class="best-guess-word">${b.word.toUpperCase()}</span>
-        <span class="best-guess-score">mm:${b.mm} | ${b.ent.toFixed(2)}bits</span>
-        <button class="best-guess-apply-btn" type="button">Use</button>`;
-      item.querySelector(".best-guess-apply-btn").addEventListener("pointerdown", e => {
-        e.preventDefault(); e.stopPropagation();
+        <span class="best-guess-score">${b.mm}</span>`;
+      item.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
         applyWordToInput(b.word);
       });
       bestEl.appendChild(item);
     });
 
-    showSolverPanel();
+    if (mode === "solve" || mode === "play") {
+      showSolverPanel();
+    }
   }
 
   function applyWordToInput(word) {
@@ -449,6 +511,42 @@
 
   function showSolverPanel() { document.getElementById("solver-panel").classList.add("visible"); }
   function hideSolverPanel() { document.getElementById("solver-panel").classList.remove("visible"); }
+
+  function ensureSolverResetButton() {
+    if (mode !== "solve") return;
+    const panel = document.getElementById("solver-panel");
+    if (!panel || document.getElementById("solver-reset-btn")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "solver-reset-btn";
+    btn.id = "solver-reset-btn";
+    btn.title = "Clear all and restart";
+    btn.innerHTML = `<i class="fa-solid fa-rotate-left"></i> Reset`;
+    btn.addEventListener("click", resetSolverState);
+    panel.appendChild(btn);
+  }
+
+  function removeSolverResetButton() {
+    const btn = document.getElementById("solver-reset-btn");
+    if (btn) btn.remove();
+  }
+
+  function resetSolverState() {
+    currentRow = 0;
+    currentCol = 0;
+    gameOver = false;
+    solverGuesses = [];
+    solverCurrentInput = "";
+    buildBoard();
+    resetKeyboardColors();
+    hideSolverPanel();
+    // Prefill first guess into solver input if set
+    if (firstGuess && /^[a-z]{5}$/.test(firstGuess) && WORDS.includes(firstGuess)) {
+      solverCurrentInput = firstGuess.toUpperCase();
+      refreshSolverInputRow();
+    }
+    showToast("Solver reset");
+  }
 
   /* =========================================================
      TILE HELPERS
@@ -612,6 +710,7 @@
       btn.className = "mode-toggle active-play";
       btn.innerHTML = `<i class="fa-solid fa-gamepad"></i> Play`;
       hideSolverPanel();
+      removeSolverResetButton();
       solverGuesses = [];
       solverCurrentInput = "";
       startNewGame();
@@ -629,6 +728,12 @@
       solverGuesses = [];
       solverCurrentInput = "";
       hideSolverPanel();
+      ensureSolverResetButton();
+      // Prefill first guess into solver input if set
+      if (settings.useFirstGuess && firstGuess && /^[a-z]{5}$/.test(firstGuess) && WORDS.includes(firstGuess)) {
+        solverCurrentInput = firstGuess.toUpperCase();
+        refreshSolverInputRow();
+      }
     }
   }
 
@@ -636,12 +741,23 @@
      FIRST GUESS
      ========================================================= */
   function updateFirstGuessBar() {
-    document.getElementById("first-guess-display").textContent = firstGuess.toUpperCase();
+    const bar = document.getElementById("first-guess-bar");
+    if (!bar) return;
+    if (settings.useFirstGuess) {
+      document.documentElement.removeAttribute("data-first-guess-enabled");
+      bar.style.display = "";
+    } else {
+      document.documentElement.setAttribute("data-first-guess-enabled", "false");
+      bar.style.display = "none";
+    }
+    const display = document.getElementById("first-guess-display");
+    if (display) display.textContent = firstGuess.toUpperCase();
   }
 
   function setFirstGuess(word) {
     word = (word || "").toLowerCase().trim();
     if (!/^[a-z]{5}$/.test(word)) { showToast("Must be a 5-letter word"); return; }
+    if (!WORDS.includes(word)) { showToast("Not in word list"); return; }
     firstGuess = word;
     localStorage.setItem("wdl_first_guess", firstGuess);
     updateFirstGuessBar();
@@ -689,14 +805,17 @@
     document.getElementById("fg-least-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess("least"); });
     document.getElementById("fg-blind-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess("blind"); });
 
+
     // Sync settings toggles
     document.getElementById("toggle-hard").checked = settings.hardMode;
     document.getElementById("toggle-dark").checked = settings.darkMode === "dark";
     document.getElementById("toggle-colorblind").checked = settings.colorBlind;
+    document.getElementById("toggle-first-guess").checked = settings.useFirstGuess;
 
     document.getElementById("toggle-hard").addEventListener("change", e => { settings.hardMode = e.target.checked; saveSettings(); });
     document.getElementById("toggle-dark").addEventListener("change", e => { settings.darkMode = e.target.checked ? "dark" : "light"; saveSettings(); applySettings(); });
     document.getElementById("toggle-colorblind").addEventListener("change", e => { settings.colorBlind = e.target.checked; saveSettings(); applySettings(); });
+    document.getElementById("toggle-first-guess").addEventListener("change", e => { settings.useFirstGuess = e.target.checked; saveSettings(); updateFirstGuessBar(); });
 
     document.getElementById("btn-share-stats").addEventListener("click", shareStats);
     document.getElementById("btn-reset-stats").addEventListener("click", () => {
