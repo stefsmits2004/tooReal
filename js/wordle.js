@@ -426,59 +426,123 @@
     return pattern.join("");
   }
 
-  function entropy(guess, words) {
-    let pc = {};
-    for (let t of words) { let p = buildPattern(guess, t); pc[p] = (pc[p] || 0) + 1; }
-    let total = words.length, e = 0;
-    for (let c of Object.values(pc)) { let p = c / total; e += p * Math.log2(1 / p); }
+  // ── Solver algorithm ────────────────────────────────────────────────────────
+  // Matches the Rust benchmark exactly:
+  //   - entropy computed over remaining candidates (filtered possible words)
+  //   - best guess searched across the FULL word list (not hard mode)
+  //   - tiebreaker: prefer a candidate over a non-candidate on equal entropy
+  //   - on full tie: first found wins (WORDS is sorted, so deterministic)
+  //
+  // This means the solver always picks the same next guess as the benchmark,
+  // giving you accurate results that match the tested word scores.
+
+  function entropy(guess, candidates) {
+    // Shannon entropy of the pattern distribution guess produces over candidates
+    const pc = {};
+    for (const t of candidates) {
+      const p = buildPattern(guess, t);
+      pc[p] = (pc[p] || 0) + 1;
+    }
+    const total = candidates.length;
+    let e = 0;
+    for (const c of Object.values(pc)) {
+      const p = c / total;
+      e -= p * Math.log2(p);
+    }
     return e;
   }
 
-  function minimax(guess, words) {
-    let pc = {};
-    for (let t of words) { let p = buildPattern(guess, t); pc[p] = (pc[p] || 0) + 1; }
-    return Math.max(...Object.values(pc));
+  function bestGuess(candidates) {
+    // candidates: words still possible (filtered by all guesses so far)
+    // searches ALL words in WORDS for the best entropy over candidates
+    if (!candidates.length) return null;
+    if (candidates.length === 1) return { word: candidates[0], isCandidate: true, ent: 0 };
+
+    const candidateSet = new Set(candidates);
+    const allWords = WORDS.map(w => w.toLowerCase());
+
+    let bestWord = allWords[0];
+    let bestEnt = -1;
+    let bestIsCandidate = false;
+
+    for (const w of allWords) {
+      const e = entropy(w, candidates);
+      const isCand = candidateSet.has(w);
+
+      // strictly higher entropy always wins
+      if (e > bestEnt + 1e-9) {
+        bestEnt = e;
+        bestWord = w;
+        bestIsCandidate = isCand;
+        continue;
+      }
+      // equal entropy: candidate beats non-candidate
+      if (Math.abs(e - bestEnt) <= 1e-9 && isCand && !bestIsCandidate) {
+        bestWord = w;
+        bestIsCandidate = true;
+      }
+    }
+
+    return { word: bestWord, ent: bestEnt, isCandidate: bestIsCandidate };
   }
 
-  function scoredBestGuesses(words) {
-    if (!words.length) return [];
-    let scored = words.map(w => {
-      const mm = minimax(w, words);
-      const ent = entropy(w, words);
-      return { word: w, mm, ent, score: mm * 1000 - ent };
+  function topGuesses(candidates, topN = 8) {
+    // Returns top N guesses by entropy from the full word list,
+    // with candidates ranked above non-candidates on equal entropy.
+    if (!candidates.length) return [];
+    if (candidates.length === 1) {
+      return [{ word: candidates[0], ent: 0, isCandidate: true }];
+    }
+
+    const candidateSet = new Set(candidates);
+    const allWords = WORDS.map(w => w.toLowerCase());
+
+    const scored = allWords.map(w => ({
+      word: w,
+      ent: entropy(w, candidates),
+      isCandidate: candidateSet.has(w),
+    }));
+
+    // sort: highest entropy first, candidates before non-candidates on ties
+    scored.sort((a, b) => {
+      const diff = b.ent - a.ent;
+      if (Math.abs(diff) > 1e-9) return diff;
+      if (a.isCandidate !== b.isCandidate) return a.isCandidate ? -1 : 1;
+      return 0;
     });
-    scored.sort((a, b) => a.score - b.score);
-    const bestScore = scored[0].score;
-    return scored.filter(s => s.score === bestScore).slice(0, 8);
+
+    return scored.slice(0, topN);
   }
 
   function solveCalc() {
-    let filtered = WORDS.map(w => w.toLowerCase());
+    // Filter to words still consistent with all guesses made so far
+    let candidates = WORDS.map(w => w.toLowerCase());
     const activeGuesses = (solverGuesses || []).filter(Boolean).filter(g => g.word);
     for (const g of activeGuesses) {
-      filtered = filtered.filter(w => buildPattern(g.word, w) === g.pattern);
+      candidates = candidates.filter(w => buildPattern(g.word, w) === g.pattern);
     }
 
+    // Show possible words
     const possEl = document.getElementById("possible-words-list");
     possEl.innerHTML = "";
-    filtered.forEach(w => {
+    candidates.forEach(w => {
       const span = document.createElement("span");
       span.className = "possible-word";
       span.textContent = w.toUpperCase();
-      span.addEventListener("click", () => applyWordToInput(w));
       possEl.appendChild(span);
     });
-    document.getElementById("possible-count").textContent = `(${filtered.length})`;
+    document.getElementById("possible-count").textContent = `(${candidates.length})`;
 
+    // Show best guesses
     const bestEl = document.getElementById("best-guess-area");
     bestEl.innerHTML = "";
-    const bests = scoredBestGuesses(filtered);
+    const bests = topGuesses(candidates, 8);
     bests.forEach(b => {
       const item = document.createElement("div");
-      item.className = "best-guess-item";
+      item.className = "best-guess-item" + (b.isCandidate ? " is-candidate" : "");
       item.innerHTML = `
         <span class="best-guess-word">${b.word.toUpperCase()}</span>
-        <span class="best-guess-score">${b.mm}</span>`;
+        <span class="best-guess-score">${b.ent.toFixed(2)}</span>`;
       item.addEventListener("pointerdown", (e) => {
         e.preventDefault();
         applyWordToInput(b.word);

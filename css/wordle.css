@@ -371,17 +371,13 @@ body {
 #possible-words-list::-webkit-scrollbar-thumb { background: var(--color-tone-4); border-radius: 2px; }
 
 .possible-word {
-  cursor: pointer;
-  padding: 0 2px;
-  border-radius: 2px;
-  transition: background 0.1s, color 0.1s;
+  cursor: default;
+  padding: 0;
+  border-radius: 0;
+  transition: none;
   white-space: nowrap;
 }
 
-.possible-word:hover {
-  background: var(--color-correct);
-  color: #fff;
-}
 
 #best-guess-area {
   display: flex;
