@@ -1,30 +1,35 @@
-# Portfolio Template
 
-Simple, project-ready portfolio template with:
+# Portfolio - tooReal
 
-- clear page structure
-- easy-to-edit placeholder text
-- reliable light/dark mode
-- no extra features that get in the way
+This repository contains my personal portfolio website (tooReal) - a collection of static pages showcasing projects, CV, and other information. One of the included projects is Wordle.
 
-## Pages
+The site is a simple static site (HTML/CSS/JS) and can be viewed by opening the HTML files in a browser or serving the folder with a static server.
 
-- `index.html` - home and overview
-- `about.html` - personal profile, hobbies, motivation, ambitions
-- `projects.html` - required project detail templates
-- `cv.html` - CV summary, skills, and PDF download
+Quick links
+- `index.html` - portfolio homepage
+- `about.html` - about / contact
+- `projects.html` - projects overview
+- `cv.html` - a CV page
+- `wordle.html` - the Wordle project
 
-## Quick content editing
+Project structure
 
-1. Replace any text wrapped in `[ ... ]` with your real content.
-2. Keep section headings; they map to project requirements.
-3. If you want me to edit text for you, tell me exact section + new text.
+```
+tooReal/
+  index.html
+  about.html
+  projects.html
+  cv.html
+  css/
+    style.css
+  js/
+    main.js
+  assets/
+    images/
+    cv/
+```
 
-## Styling and behavior
+Wordle is included as `wordle.html` with supporting CSS (`css/wordle.css`) and JavaScript (`js/wordle.js`) and contains two modes:
 
-- Main styles: `css/style.css`
-- Theme + active nav logic: `js/app.js`
-
-## CV file
-
-- Download link points to: `assets/cv/CV_Stef_Smits.pdf`
+- Play mode: play Wordle-style rounds using the full English NYT word list.
+- Solve mode: helper mode to narrow down possible words given feedback.

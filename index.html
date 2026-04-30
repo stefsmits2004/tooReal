@@ -1,162 +1,355 @@
-<!doctype html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Portfolio homepage of Stef Smits, IT student in Applied Computer Science." />
-  <title>Portfolio | Home</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stef Smits — Portfolio</title>
+  <meta name="description" content="Portfolio of Stef Smits — Applied Computer Science student at Thomas More Geel." />
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Hero ───────────────────────────────────── */
+    .hero {
+      min-height: calc(100vh - var(--nav-h));
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 4rem 0;
+    }
+
+    /* background mesh */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 55% at 75% 40%, rgba(52,81,81,0.45) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 70%, rgba(42,74,90,0.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (max-width: 700px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-avatar { display: none; }
+    }
+
+    .hero-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .hero-label-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse-dot 2s infinite;
+    }
+
+    .hero h1 { color: var(--text); margin-bottom: 1.25rem; }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--green);
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 52ch;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .hero-avatar {
+      position: relative;
+    }
+    .hero-avatar-ring {
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--dark-green), var(--dark-cyan));
+      padding: 3px;
+      box-shadow: 0 0 60px rgba(119,187,153,0.15);
+    }
+    .hero-avatar-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: var(--bg-card);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-avatar-inner img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .hero-avatar-inner .avatar-placeholder {
+      font-size: 5rem;
+      user-select: none;
+    }
+
+    /* ── Stat bar ────────────────────────────────── */
+    .stat-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 4rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .stat {
+      flex: 1;
+      min-width: 140px;
+      padding: 1.5rem;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--ff-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green);
+      display: block;
+    }
+    .stat-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+    /* ── Quick-nav tiles ─────────────────────────── */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .quick-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+      text-decoration: none;
+    }
+    .quick-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+    .quick-card::after {
+      content: '→';
+      position: absolute;
+      top: 1.75rem; right: 1.75rem;
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      transition: color var(--transition), transform var(--transition);
+    }
+    .quick-card:hover::after { color: var(--green); transform: translate(3px, -3px); }
+
+    .qc-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
+    }
+    .quick-card h3 { color: var(--text); margin-top: 0.25rem; }
+    .quick-card p  { font-size: 0.9rem; max-width: 30ch; }
+
+    /* ── Highlights strip ────────────────────────── */
+    .highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .hl {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    .hl-title {
+      font-family: var(--ff-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--green);
+      margin-bottom: 0.35rem;
+    }
+    .hl p { font-size: 0.85rem; margin: 0; }
+  </style>
 </head>
-<body data-page="home">
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html">
-        <img class="brand-logo" src="favicon.svg" alt="" aria-hidden="true" />
-        <span>Stef Smits</span>
-      </a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a class="nav-link" data-nav="home" href="index.html">Home</a>
-        <a class="nav-link" data-nav="about" href="about.html">About</a>
-        <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
-        <a class="nav-link" data-nav="cv" href="cv.html">CV</a>
-      </nav>
-      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
-        <span class="theme-switch" aria-hidden="true">
-          <i class="fa-solid fa-sun"></i>
-          <i class="fa-solid fa-moon"></i>
-          <span class="theme-thumb"><i class="fa-solid fa-sun theme-thumb-icon" aria-hidden="true"></i></span>
-        </span>
-      </button>
-    </div>
-  </header>
+<body>
 
-  <main>
-    <section class="hero hero-slideshow" aria-label="Portfolio section navigation slideshow" data-slideshow>
-      <div class="container">
-        <div class="hero-slides">
-          <article class="hero-slide is-active" data-slide>
-            <p class="hero-kicker">Welcome</p>
-            <h1 class="hero-title">Hi, I am Stef Smits</h1>
-            <p class="hero-text">IT student focused on practical software, clear design, and reliable problem-solving. Start here to quickly explore my profile, projects, and CV.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="about.html">Explore About Me</a>
-              <a class="button-link button-link-secondary" href="projects.html">View Projects</a>
-            </div>
-          </article>
+<!-- ── Navigation ─────────────────────────────── -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    Stef Smits
+  </a>
+  <button class="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="cv.html">CV</a>
+  </div>
+</nav>
 
-          <article class="hero-slide" data-slide>
-            <p class="hero-kicker">Projects</p>
-            <h2 class="hero-title">See What I Build</h2>
-            <p class="hero-text">Go through project cards with context, outcomes, lessons learned, and personal contribution in a structured and easy-to-read format.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="projects.html">Go to Projects</a>
-            </div>
-          </article>
+<div class="page-wrap">
 
-          <article class="hero-slide" data-slide>
-            <p class="hero-kicker">About</p>
-            <h2 class="hero-title">Profile, Skills, and Direction</h2>
-            <p class="hero-text">Read my background, education, strengths, and goals, including both personal and educational contact details.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="about.html">Go to About</a>
-            </div>
-          </article>
-
-          <article class="hero-slide" data-slide>
-            <p class="hero-kicker">CV</p>
-            <h2 class="hero-title">Professional CV Overview</h2>
-            <p class="hero-text">Open a clean CV layout with education, student job, language levels, and direct links for contact and PDF download.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="cv.html">Go to CV</a>
-            </div>
-          </article>
+  <!-- ── Hero ──────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-label fade-up">
+            <span class="hero-label-dot"></span>
+            <span class="label">Applied Computer Science · Thomas More Geel</span>
+          </div>
+          <h1 class="fade-up delay-1">
+            Hi, I'm <em>Stef Smits</em>.<br/>
+            I build things that work.
+          </h1>
+          <p class="hero-desc fade-up delay-2">
+            First-year IT student with a taste for clean code, practical software,
+            and the satisfaction of solving a problem the right way. Welcome to my portfolio.
+          </p>
+          <div class="hero-ctas fade-up delay-3">
+            <a href="projects.html" class="btn btn-primary">View Projects</a>
+            <a href="about.html" class="btn btn-outline">About Me</a>
+            <a href="cv.html" class="btn btn-ghost">Open CV</a>
+          </div>
         </div>
 
-        <button class="slide-arrow slide-arrow-left" type="button" aria-label="Previous slide" data-slide-prev>
-          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <button class="slide-arrow slide-arrow-right" type="button" aria-label="Next slide" data-slide-next>
-          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-        </button>
-
-        <div class="slide-dots" role="tablist" aria-label="Slideshow navigation">
-          <button class="slide-dot is-active" type="button" data-slide-to="0" aria-label="Go to slide 1"></button>
-          <button class="slide-dot" type="button" data-slide-to="1" aria-label="Go to slide 2"></button>
-          <button class="slide-dot" type="button" data-slide-to="2" aria-label="Go to slide 3"></button>
-          <button class="slide-dot" type="button" data-slide-to="3" aria-label="Go to slide 4"></button>
+        <div class="hero-avatar fade-in delay-4">
+          <div class="hero-avatar-ring">
+            <div class="hero-avatar-inner">
+              <!-- Replace src with your actual profile photo -->
+              <img
+                src="assets/images/profile.jpg"
+                alt="Photo of Stef Smits"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              />
+              <div class="avatar-placeholder" style="display:none;">🧑‍💻</div>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <section class="section section-blue">
-      <div class="container">
-        <h2 class="section-title">Highlights</h2>
-        <div class="grid grid-3">
-          <article class="card">
-            <h3>Analytical Mindset</h3>
-            <p>I break down complex problems into structured solutions with clear priorities.</p>
-          </article>
-          <article class="card">
-            <h3>Technical Foundation</h3>
-            <p>Hands-on with Python, web technologies, Linux and Windows systems, and team projects.</p>
-          </article>
-          <article class="card">
-            <h3>Growth Focus</h3>
-            <p>I continuously refine quality, readability, and user experience in every iteration.</p>
-          </article>
+      <!-- Stat bar -->
+      <div class="stat-bar fade-up delay-4">
+        <div class="stat">
+          <span class="stat-number">4+</span>
+          <span class="stat-desc">Projects completed / ongoing</span>
         </div>
-      </div>
-    </section>
-
-    <section class="section section-green">
-      <div class="container">
-        <h2 class="section-title">Explore Pages</h2>
-        <div class="grid grid-3">
-          <article class="card">
-            <h3>About</h3>
-            <p>Personal profile, education, strengths, and complete contact overview.</p>
-            <a class="button-link button-compact" href="about.html">Open About</a>
-          </article>
-          <article class="card">
-            <h3>Projects</h3>
-            <p>Detailed project contexts, outcomes, lessons learned, and contribution notes.</p>
-            <a class="button-link button-compact" href="projects.html">Open Projects</a>
-          </article>
-          <article class="card">
-            <h3>CV</h3>
-            <p>Structured CV preview with profile, education, languages, and student jobs.</p>
-            <a class="button-link button-compact" href="cv.html">Open CV</a>
-          </article>
+        <div class="stat">
+          <span class="stat-number">6+</span>
+          <span class="stat-desc">Technologies used</span>
         </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <p class="footer-title">Stef Smits</p>
-        <p class="footer-subtitle">IT Student | Applied Computer Science</p>
-        <p class="footer-meta">Building practical, user-focused digital solutions.</p>
-      </div>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="projects.html">Projects</a>
-        <a href="cv.html">CV</a>
-      </div>
-      <div class="footer-social">
-        <a class="footer-icon-link" href="mailto:more.dtail@gmail.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
-        <a class="footer-icon-link" href="https://www.linkedin.com/in/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
-        <a class="footer-icon-link" href="https://github.com/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+        <div class="stat">
+          <span class="stat-number">1</span>
+          <span class="stat-desc">Year into the journey</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">∞</span>
+          <span class="stat-desc">Things left to learn</span>
+        </div>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/app.js"></script>
+  <!-- ── Quick nav ─────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">Explore</p>
+        <h2>What you'll find here</h2>
+      </div>
+      <div class="quick-grid">
+        <a href="about.html" class="quick-card" data-reveal="0">
+          <div class="qc-icon">👤</div>
+          <h3>About Me</h3>
+          <p>Who I am, what drives me, my hobbies, and where I'm headed.</p>
+        </a>
+        <a href="projects.html" class="quick-card" data-reveal="0.1">
+          <div class="qc-icon">🛠️</div>
+          <h3>Projects</h3>
+          <p>Semester projects, personal builds, and concept work — with real detail.</p>
+        </a>
+        <a href="cv.html" class="quick-card" data-reveal="0.2">
+          <div class="qc-icon">📄</div>
+          <h3>Curriculum Vitae</h3>
+          <p>My education, skills, languages, and experience in a clean CV layout.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Highlights ─────────────────────────────── -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">Strengths</p>
+        <h2>What I bring to the table</h2>
+      </div>
+      <div class="highlights">
+        <div class="hl" data-reveal="0">
+          <div class="hl-title">Analytical thinking</div>
+          <p>I break problems into layers before writing a single line of code.</p>
+        </div>
+        <div class="hl" data-reveal="0.1">
+          <div class="hl-title">Attention to detail</div>
+          <p>Whether it's a UI component or a backend query — the small things matter.</p>
+        </div>
+        <div class="hl" data-reveal="0.2">
+          <div class="hl-title">Fast learner</div>
+          <p>New stack? New concept? I pick things up quickly and apply them right away.</p>
+        </div>
+        <div class="hl" data-reveal="0.3">
+          <div class="hl-title">Team player</div>
+          <p>I communicate clearly, share context, and make sure group work actually works.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Footer ─────────────────────────────────── -->
+<footer>
+  <div>
+    <div class="foot-brand">Stef Smits</div>
+    <div class="foot-sub">IT Student · Applied Computer Science</div>
+  </div>
+  <nav class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="cv.html">CV</a>
+    <a href="https://github.com/stefsmits2004" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://linkedin.com/in/stefsmits2004" target="_blank" rel="noopener">LinkedIn</a>
+  </nav>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>

@@ -374,10 +374,10 @@
 
   function commitSolverGuess(word) {
     const wordListUpper = WORDS.map(w => w.toUpperCase());
-    if (!wordListUpper.includes(word.toUpperCase())) { 
+    if (!wordListUpper.includes(word.toUpperCase())) {
       shakeRow(currentRow); 
-      showToast("Not in word list"); 
-      return; 
+      showToast("Not in word list");
+      return;
     }
     for (let c = 0; c < WORD_LEN; c++) {
       board[currentRow][c].letter = word[c].toUpperCase();

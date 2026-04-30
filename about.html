@@ -1,192 +1,501 @@
-<!doctype html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="About Stef Smits, Applied Computer Science student at Thomas More." />
-  <title>Portfolio | About</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Stef Smits</title>
+  <meta name="description" content="About Stef Smits — background, hobbies, ambitions and skills." />
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Page hero ───────────────────────────────── */
+    .page-hero {
+      padding: clamp(3rem, 8vw, 5rem) 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 80% 50%, rgba(52,81,81,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-hero .label { margin-bottom: 0.5rem; }
+    .page-hero h1 { max-width: 16ch; }
+
+    /* ── Profile grid ────────────────────────────── */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .profile-grid { grid-template-columns: 1fr; }
+      .profile-photo-col { display: flex; justify-content: center; }
+    }
+
+    .profile-photo {
+      width: 220px; height: 220px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    .profile-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .profile-meta-item span:first-child { font-size: 1rem; }
+
+    /* ── Two-col content ─────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 680px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    /* ── Hobby cards ─────────────────────────────── */
+    .hobby-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .hobby-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: center;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .hobby-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-3px);
+    }
+    .hobby-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .hobby-card h4 { font-size: 0.9rem; color: var(--text); }
+    .hobby-card p  { font-size: 0.8rem; margin: 0.25rem 0 0; max-width: none; }
+
+    /* ── Skills section ──────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    @media (max-width: 680px) {
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+
+    .skills-block h3 { margin-bottom: 1.25rem; }
+
+    /* ── Soft skill pills ────────────────────────── */
+    .soft-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .soft-pill {
+      padding: 0.4rem 0.9rem;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.82rem;
+      color: var(--text);
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .soft-pill:hover { border-color: var(--green); color: var(--green); }
+
+    /* ── Why / Ambition cards ─────────────────────── */
+    .story-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .story-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--green), var(--cyan));
+    }
+    .story-card .qno {
+      font-family: var(--ff-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+    }
+    .story-card p { max-width: none; }
+
+    /* ── Contact links ───────────────────────────── */
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      color: var(--text);
+      transition: border-color var(--transition), color var(--transition), transform var(--transition);
+    }
+    .contact-link:hover {
+      border-color: var(--green);
+      color: var(--green);
+      transform: translateX(4px);
+    }
+    .contact-link .ci { font-size: 1.1rem; }
+    .contact-link .cl { color: var(--text-dim); font-size: 0.8rem; display: block; }
+  </style>
 </head>
-<body data-page="about">
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html"><img class="brand-logo" src="favicon.svg" alt="" aria-hidden="true" /><span>Stef Smits</span></a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a class="nav-link" data-nav="home" href="index.html">Home</a>
-        <a class="nav-link" data-nav="about" href="about.html">About</a>
-        <a class="nav-link" data-nav="projects" href="projects.html">Projects</a>
-        <a class="nav-link" data-nav="cv" href="cv.html">CV</a>
-      </nav>
-      <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
-        <span class="theme-switch" aria-hidden="true">
-          <i class="fa-solid fa-sun"></i>
-          <i class="fa-solid fa-moon"></i>
-          <span class="theme-thumb"><i class="fa-solid fa-sun theme-thumb-icon" aria-hidden="true"></i></span>
-        </span>
-      </button>
+<body>
+
+<!-- ── Navigation ─────────────────────────────── -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-dot"></span>
+    Stef Smits
+  </a>
+  <button class="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="cv.html">CV</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ── Page Hero ──────────────────────────────── -->
+  <div class="page-hero">
+    <div class="container">
+      <p class="label fade-up">About Me</p>
+      <h1 class="fade-up delay-1">More than just<br/>an IT student.</h1>
+      <p class="fade-up delay-2" style="font-size:1.05rem; margin-top:1rem; max-width:55ch;">
+        I'm Stef Smits — curious by nature, methodical by habit, and convinced that the best software
+        starts with actually understanding the problem.
+      </p>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <section class="hero hero-slideshow" aria-label="About slideshow" data-slideshow>
-      <div class="container">
-        <div class="hero-slides">
-          <article class="hero-slide is-active" data-slide>
-            <p class="hero-kicker">About Me</p>
-            <h1 class="hero-title">Driven by Analysis, Built for Practical Impact</h1>
-            <p class="hero-text">I am Stef Smits, an IT student currently pursuing a professional bachelor in Applied Computer Science at Thomas More Campus Geel.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="#intro">Open Introduction</a>
+  <!-- ── Profile intro ──────────────────────────── -->
+  <section class="section" id="intro">
+    <div class="container">
+      <div class="profile-grid">
+        <div class="profile-photo-col">
+          <div>
+            <div class="profile-photo">
+              <!-- Replace with your actual photo -->
+              <img
+                src="assets/images/profile.jpg"
+                alt="Stef Smits"
+                onerror="this.style.display='none'; this.parentElement.textContent='🧑‍💻';"
+              />
             </div>
-          </article>
-          <article class="hero-slide" data-slide>
-            <p class="hero-kicker">Education</p>
-            <h2 class="hero-title">Academic and Technical Growth</h2>
-            <p class="hero-text">Explore my educational background, technical foundation, and core working strengths.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="#education">Go to Education</a>
-              <a class="button-link button-link-secondary" href="#skills">Go to Skills</a>
+            <!-- ↓ Fill in your details -->
+            <div class="profile-meta">
+              <div class="profile-meta-item"><span>📍</span><span>Geel, Belgium</span></div>
+              <div class="profile-meta-item"><span>🎓</span><span>Thomas More Campus Geel</span></div>
+              <div class="profile-meta-item"><span>📅</span><span>2004 · 1st year ACS</span></div>
             </div>
-          </article>
-          <article class="hero-slide" data-slide>
-            <p class="hero-kicker">Contact</p>
-            <h2 class="hero-title">Personal and School Contact Details</h2>
-            <p class="hero-text">All key contact information is available with both personal and educational channels included.</p>
-            <div class="hero-actions">
-              <a class="button-link" href="#contact">Go to Contact</a>
-            </div>
-          </article>
+          </div>
         </div>
 
-        <button class="slide-arrow slide-arrow-left" type="button" aria-label="Previous slide" data-slide-prev>
-          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <button class="slide-arrow slide-arrow-right" type="button" aria-label="Next slide" data-slide-next>
-          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-        </button>
-
-        <div class="slide-dots" role="tablist" aria-label="Slideshow navigation">
-          <button class="slide-dot is-active" type="button" data-slide-to="0" aria-label="Go to slide 1"></button>
-          <button class="slide-dot" type="button" data-slide-to="1" aria-label="Go to slide 2"></button>
-          <button class="slide-dot" type="button" data-slide-to="2" aria-label="Go to slide 3"></button>
+        <div>
+          <p class="label">Introduction</p>
+          <div class="divider"></div>
+          <p style="font-size:1.05rem; margin-bottom:1rem; color:var(--text);">
+            I'm Stef — a first-year Applied Computer Science student at Thomas More Geel.
+            I grew up fascinated by how computers work under the hood: what makes software fast,
+            why one approach beats another, and how you get from an idea to something that actually runs.
+          </p>
+          <p style="margin-bottom:1.5rem;">
+            My background in Science-Mathematics gave me a strong analytical foundation.
+            I lean on that every time I sit down to code — breaking a problem apart before
+            diving into solutions.
+          </p>
+          <div class="flex flex-wrap gap-1">
+            <span class="tag green">Python</span>
+            <span class="tag green">Java</span>
+            <span class="tag">HTML/CSS/JS</span>
+            <span class="tag">PHP</span>
+            <span class="tag">React</span>
+            <span class="tag">.NET</span>
+            <span class="tag">Linux</span>
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section class="section section-blue" id="intro">
-      <div class="container profile-layout">
-        <div class="profile-image-wrap">
-          <img class="profile-image" src="assets/images/profile.jpg" alt="Profile photo of Stef Smits" />
-        </div>
-        <div class="profile-content">
-          <h2 class="section-title">Personal Introduction</h2>
-          <p>I am focused on developing strong analytical and problem-solving skills to create meaningful digital solutions. I prefer clear structure, reliable execution, and practical outcomes.</p>
-          <p>My interest in IT comes from a genuine passion for computers and problem-solving. I enjoy combining creativity with logic to build software that is functional and valuable to the user.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-green" id="education">
-      <div class="container">
-        <h2 class="section-title">Education</h2>
-        <div class="grid grid-2">
-          <article class="card">
-            <h3>Professional Bachelor Applied Computer Science</h3>
-            <p>Thomas More Campus Geel</p>
-            <p>2024 - present</p>
-          </article>
-          <article class="card">
-            <h3>Secondary Education - Science and Mathematics</h3>
-            <p>Provil-ION</p>
-            <p>2016 - 2023</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-blue" id="skills">
-      <div class="container">
-        <h2 class="section-title">Skills and Technologies</h2>
-        <div class="grid grid-2">
-          <article class="card">
-            <h3>Core Skills</h3>
-            <ul class="clean-list">
-              <li>Analytical thinking</li>
-              <li>Problem solving</li>
-              <li>Structured development</li>
-              <li>Independent working</li>
-              <li>Creative and practical mindset</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Tech Stack</h3>
-            <ul class="clean-list">
-              <li>Python, Java</li>
-              <li>HTML, CSS, JavaScript</li>
-              <li>PHP</li>
-              <li>Linux and Windows systems</li>
-              <li>React and .NET Development</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-green" id="contact">
-      <div class="container">
-        <h2 class="section-title">Contact</h2>
-        <div class="grid grid-2">
-          <article class="card">
-            <h3>Personal Email</h3>
-            <p><a class="text-link" href="mailto:more.dtail@gmail.com">more.dtail@gmail.com</a></p>
-          </article>
-          <article class="card">
-            <h3>Educational Email</h3>
-            <p><a class="text-link" href="mailto:r1034513@student.thomasmore.be">r1034513@student.thomasmore.be</a></p>
-          </article>
-          <article class="card">
-            <h3>Personal GitHub</h3>
-            <p><a class="text-link" href="https://github.com/stefsmits2004" target="_blank" rel="noopener noreferrer">github.com/stefsmits2004</a></p>
-          </article>
-          <article class="card">
-            <h3>Educational GitHub</h3>
-            <p><a class="text-link" href="https://github.com/Stef-Smits" target="_blank" rel="noopener noreferrer">github.com/Stef-Smits</a></p>
-          </article>
-          <article class="card">
-            <h3>LinkedIn</h3>
-            <p><a class="text-link" href="https://www.linkedin.com/in/stefsmits2004" target="_blank" rel="noopener noreferrer">linkedin.com/in/stefsmits2004</a></p>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <p class="footer-title">Stef Smits</p>
-        <p class="footer-subtitle">IT Student | Applied Computer Science</p>
-        <p class="footer-meta">Building practical, user-focused digital solutions.</p>
-      </div>
-      <div class="footer-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="projects.html">Projects</a>
-        <a href="cv.html">CV</a>
-      </div>
-      <div class="footer-social">
-        <a class="footer-icon-link" href="mailto:more.dtail@gmail.com" aria-label="Email" title="Email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a>
-        <a class="footer-icon-link" href="https://www.linkedin.com/in/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
-        <a class="footer-icon-link" href="https://github.com/stefsmits2004" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
       </div>
     </div>
-  </footer>
+  </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/app.js"></script>
+  <!-- ── Hobbies ────────────────────────────────── -->
+  <section class="section" id="hobbies">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">Outside the classroom</p>
+        <h2>What I do when I'm not coding</h2>
+      </div>
+      <div class="hobby-grid">
+        <div class="hobby-card" data-reveal="0">
+          <div class="hobby-icon">🎵</div>
+          <h4>Music production</h4>
+          <p>I produce music in my spare time — building tracks from scratch teaches you a lot about patience and iteration.</p>
+        </div>
+        <div class="hobby-card" data-reveal="0.1">
+          <div class="hobby-icon">🧩</div>
+          <h4>Puzzle & strategy games</h4>
+          <p>I enjoy games that make you think — whether that's chess, logic puzzles, or games with deep mechanics.</p>
+        </div>
+        <div class="hobby-card" data-reveal="0.2">
+          <div class="hobby-icon">🚴</div>
+          <h4>Cycling</h4>
+          <p>Long rides help me reset. There's something about solving problems in your head while moving that just works.</p>
+        </div>
+        <div class="hobby-card" data-reveal="0.3">
+          <div class="hobby-icon">📐</div>
+          <h4>Tinkering & building</h4>
+          <p>I like understanding how things work — whether it's hardware, software, or taking something apart to see inside.</p>
+        </div>
+        <div class="hobby-card" data-reveal="0.4">
+          <div class="hobby-icon">📚</div>
+          <h4>Reading (tech & science)</h4>
+          <p>I read a lot around computer science — algorithms, systems design, and the occasional science deep-dive.</p>
+        </div>
+        <div class="hobby-card" data-reveal="0.5">
+          <div class="hobby-icon">🌐</div>
+          <h4>Building side projects</h4>
+          <p>I prototype ideas outside of school — the Wordle project on this domain started as a weekend experiment.</p>
+        </div>
+      </div>
+      <p style="font-size:0.82rem; color:var(--text-dim); margin-top:1rem;">
+        ✏️ <em>Tip: update hobbies in about.html → .hobby-grid to match your actual interests.</em>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Why ACS + Ambitions ────────────────────── -->
+  <section class="section" id="story">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">My story</p>
+        <h2>Why IT, and where I'm headed</h2>
+      </div>
+      <div class="two-col">
+        <div class="story-card" data-reveal="0">
+          <div class="qno">Why Applied Computer Science?</div>
+          <h3>The click that changed everything</h3>
+          <div class="divider"></div>
+          <p>
+            My path into IT wasn't a planned decision — it was a realisation. During my final year
+            of secondary school I spent weekends building small scripts and browser tools just to
+            see if I could. That compulsive need to build and fix things made the choice obvious.
+          </p>
+          <p style="margin-top:0.75rem;">
+            Applied Computer Science at Thomas More appealed to me because it's hands-on from day one.
+            I didn't want to spend years on theory before touching a real project. Here, you build
+            things — and you build them fast.
+          </p>
+        </div>
+        <div class="story-card" data-reveal="0.15">
+          <div class="qno">Future dreams & ambitions</div>
+          <h3>Where I want to end up</h3>
+          <div class="divider"></div>
+          <p>
+            My long-term goal is to work as a software engineer or backend developer — ideally
+            in a company where quality and craft actually matter to the team. I'm drawn towards
+            systems that need to be reliable, scalable, and well-designed rather than just functional.
+          </p>
+          <p style="margin-top:0.75rem;">
+            Short term: I want to deepen my knowledge of backend development, get comfortable with
+            cloud infrastructure, and contribute to a meaningful open-source project before I graduate.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Skills ─────────────────────────────────── -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">Skills</p>
+        <h2>Technical & soft skills</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skills-block">
+          <h3>Technical skills</h3>
+          <!-- ↓ Adjust % honestly — it's better to be accurate than to claim 95% everything -->
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Python</span><span>70%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:70%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>HTML / CSS</span><span>75%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:75%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>JavaScript</span><span>55%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:55%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Java</span><span>50%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:50%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>PHP</span><span>45%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:45%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Linux / CLI</span><span>60%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Git & version control</span><span>65%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:65%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>React / .NET (learning)</span><span>30%</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:30%"></div></div>
+          </div>
+        </div>
+
+        <div class="skills-block">
+          <h3>Soft skills</h3>
+          <div class="soft-pills">
+            <span class="soft-pill">Analytical thinking</span>
+            <span class="soft-pill">Problem solving</span>
+            <span class="soft-pill">Attention to detail</span>
+            <span class="soft-pill">Independent working</span>
+            <span class="soft-pill">Team communication</span>
+            <span class="soft-pill">Fast learner</span>
+            <span class="soft-pill">Structured mindset</span>
+            <span class="soft-pill">Reliability</span>
+            <span class="soft-pill">Curiosity</span>
+            <span class="soft-pill">Persistence</span>
+          </div>
+
+          <h3 style="margin-top:2rem;">Languages</h3>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Dutch</span><span>Native</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:100%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>English</span><span>C1</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>French</span><span>B1</span></div>
+            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:55%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ────────────────────────────────── -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <p class="label">Contact</p>
+        <h2>Get in touch</h2>
+      </div>
+      <div style="max-width:480px;">
+        <div class="contact-list">
+          <a href="mailto:more.dtail@gmail.com" class="contact-link">
+            <span class="ci">✉️</span>
+            <span>
+              more.dtail@gmail.com
+              <span class="cl">Personal email</span>
+            </span>
+          </a>
+          <a href="mailto:r1034513@student.thomasmore.be" class="contact-link">
+            <span class="ci">🎓</span>
+            <span>
+              r1034513@student.thomasmore.be
+              <span class="cl">School email</span>
+            </span>
+          </a>
+          <a href="https://github.com/stefsmits2004" target="_blank" rel="noopener" class="contact-link">
+            <span class="ci">🐙</span>
+            <span>
+              github.com/stefsmits2004
+              <span class="cl">Personal GitHub</span>
+            </span>
+          </a>
+          <a href="https://github.com/Stef-Smits" target="_blank" rel="noopener" class="contact-link">
+            <span class="ci">🐙</span>
+            <span>
+              github.com/Stef-Smits
+              <span class="cl">School GitHub</span>
+            </span>
+          </a>
+          <a href="https://linkedin.com/in/stefsmits2004" target="_blank" rel="noopener" class="contact-link">
+            <span class="ci">💼</span>
+            <span>
+              linkedin.com/in/stefsmits2004
+              <span class="cl">LinkedIn</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── Footer ─────────────────────────────────── -->
+<footer>
+  <div>
+    <div class="foot-brand">Stef Smits</div>
+    <div class="foot-sub">IT Student · Applied Computer Science</div>
+  </div>
+  <nav class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="cv.html">CV</a>
+    <a href="https://github.com/stefsmits2004" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://linkedin.com/in/stefsmits2004" target="_blank" rel="noopener">LinkedIn</a>
+  </nav>
+</footer>
+
+<script src="js/main.js"></script>
 </body>
 </html>
-
