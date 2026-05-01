@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CV — Stef Smits</title>
-  <meta name="description" content="Curriculum Vitae of Stef Smits — Applied Computer Science student." />
+  <title>CV - Stef Smits</title>
+  <meta name="description" content="Curriculum Vitae of Stef Smits - Applied Computer Science student." />
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
   <style>
@@ -39,15 +39,16 @@
       .cv-grid { grid-template-columns: 1fr; }
     }
 
-    /* ── Sidebar ─────────────────────────────────── */
+    /* ── Sidebar ─────────────────────────────── */
     .cv-sidebar {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
+      min-height: 100%;
     }
 
     .cv-profile-img {
-      width: 160px; height: 160px;
+      width: 100%; height: 100%;
       border-radius: var(--radius-lg);
       overflow: hidden;
       background: var(--bg-card-2);
@@ -69,7 +70,7 @@
       padding: 1.25rem 1.5rem;
     }
     .cv-block-title {
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.14em;
@@ -117,11 +118,16 @@
     .cv-main {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 2.2rem;
+      min-height: 100%;
+    }
+
+    .cv-main > .cv-block {
+      margin-top: auto;
     }
 
     .cv-section-title {
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.14em;
@@ -130,6 +136,22 @@
       padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--border);
       margin-bottom: 1.25rem;
+    }
+
+    .cv-main-name {
+      font-family: var(--ff-display), sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-transform: none;
+      margin-bottom: 0.35rem;
+    }
+    .cv-main-subtitle {
+      font-family: var(--ff-display), sans-serif;
+      max-width: none;
+      font-size: clamp(1.05rem, 2.3vw, 1.35rem);
+      line-height: 1.45;
+      margin: 0;
     }
 
     /* Timeline entries */
@@ -146,7 +168,7 @@
     .tl-period {
       font-size: 0.78rem;
       color: var(--text-dim);
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-weight: 600;
       padding-top: 0.15rem;
     }
@@ -184,7 +206,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 0.8rem;
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-weight: 600;
       color: var(--text);
       transition: var(--transition);
@@ -192,15 +214,16 @@
     .tech-pill:hover { border-color: var(--green); color: var(--green); }
     .tech-pill.accent { border-color: rgba(119,187,153,0.3); color: var(--green); }
 
-    /* Soft skill list */
-    .soft-list {
+    .cv-skills-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .soft-list span {
+      flex-direction: column;
+      gap: 0.45rem;
       font-size: 0.8rem;
       color: var(--text-muted);
+    }
+    .cv-skill-item {
+      display: block;
+      width: 100%;
       padding: 0.3rem 0.7rem;
       background: rgba(255,255,255,0.04);
       border-radius: 6px;
@@ -247,18 +270,20 @@
         IT Student · Applied Computer Science · Thomas More Geel
       </p>
       <p class="fade-up delay-3" style="font-size:0.9rem; margin-top:0.5rem; max-width:58ch;">
-        Driven by a genuine interest in programming, systems design, and practical software —
+        Driven by a genuine interest in programming, systems design, and practical software -
         always looking for the clean solution over the quick one.
       </p>
       <div class="hero-actions fade-up delay-4">
-        <!--
-          ✏️ IMPORTANT: Once you have created your PDF CV (matching this branding),
-             place it at assets/cv/CV_Stef_Smits.pdf and this button will work.
-        -->
         <a href="assets/cv/CV_Stef_Smits.pdf" download class="btn btn-primary">
           ⬇ Download CV (PDF)
         </a>
-        <button onclick="window.print()" class="btn btn-outline">🖨 Print CV</button>
+        <a
+          href="assets/cv/CV_Stef_Smits.pdf"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-outline"
+          title="Open CV PDF for printing"
+        >🖨 Print CV (PDF)</a>
       </div>
     </div>
   </div>
@@ -275,32 +300,27 @@
             <img
               src="assets/images/profile.jpg"
               alt="Stef Smits"
-              onerror="this.style.display='none'; this.parentElement.textContent='🧑‍💻';"
             />
           </div>
 
-          <!-- Contact -->
+          <!-- Profile -->
           <div class="cv-block">
-            <div class="cv-block-title">Contact</div>
-            <div class="contact-item">
-              <span class="ci">📞</span>
-              <a href="tel:+32472323433">+32 472 32 34 33</a>
-            </div>
-            <div class="contact-item">
-              <span class="ci">✉️</span>
-              <a href="mailto:more.dtail@gmail.com">more.dtail@gmail.com</a>
-            </div>
-            <div class="contact-item">
-              <span class="ci">🐙</span>
-              <a href="https://github.com/stefsmits2004" target="_blank" rel="noopener">github.com/stefsmits2004</a>
-            </div>
-            <div class="contact-item">
-              <span class="ci">💼</span>
-              <a href="https://linkedin.com/in/stefsmits2004" target="_blank" rel="noopener">linkedin.com/in/stefsmits2004</a>
-            </div>
-            <div class="contact-item">
-              <span class="ci">📍</span>
-              <span style="color:var(--text-muted);">Geel, Belgium</span>
+            <div class="cv-block-title">Profile</div>
+            <p style="margin:0; color:var(--text-muted); font-size:0.85rem; line-height:1.7;">
+              IT student with a strong interest in programming and problem-solving, focused on continuously improving technical skills and building practical, effective solutions.
+            </p>
+          </div>
+
+          <!-- Skills -->
+          <div class="cv-block">
+            <div class="cv-block-title">Skills</div>
+            <div class="cv-skills-list">
+              <span class="cv-skill-item">Problem-solving</span>
+              <span class="cv-skill-item">Critical thinking</span>
+              <span class="cv-skill-item">Attention to detail</span>
+              <span class="cv-skill-item">Quick learner</span>
+              <span class="cv-skill-item">Adaptability</span>
+              <span class="cv-skill-item">Professionalism</span>
             </div>
           </div>
 
@@ -320,7 +340,7 @@
               <div class="lang-dots">
                 <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
                 <div class="lang-dot filled"></div><div class="lang-dot filled"></div>
-                <div class="lang-dot half"></div>
+                <div class="lang-dot"></div>
               </div>
             </div>
             <div class="lang-row">
@@ -332,34 +352,16 @@
               </div>
             </div>
           </div>
-
-          <!-- Soft skills sidebar preview -->
-          <div class="cv-block">
-            <div class="cv-block-title">Strengths</div>
-            <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.82rem; color:var(--text-muted);">
-              <span>→ Analytical thinking</span>
-              <span>→ Attention to detail</span>
-              <span>→ Fast learner</span>
-              <span>→ Structured mindset</span>
-              <span>→ Team communication</span>
-              <span>→ Independent work</span>
-              <span>→ Reliability</span>
-            </div>
-          </div>
         </aside>
 
         <!-- ── Main ───────────────────────────────── -->
         <div class="cv-main">
 
-          <!-- Profile text -->
+          <!-- Name / title -->
           <div>
-            <div class="cv-section-title">Profile</div>
-            <p style="max-width:none; color:var(--text); font-size:0.95rem; line-height:1.75;">
-              I am a first-year Applied Computer Science student with a genuine passion for programming
-              and system design. My background in Science-Mathematics gave me a strong analytical mindset
-              that I apply to every problem I encounter. I enjoy working through complexity carefully,
-              prefer clean solutions over hacky ones, and take quality seriously.
-              I'm seeking to grow into backend development and software engineering.
+            <div class="cv-section-title cv-main-name">Stef Smits</div>
+            <p class="cv-main-subtitle">
+              IT Student
             </p>
           </div>
 
@@ -368,121 +370,66 @@
             <div class="cv-section-title">Education</div>
             <div class="timeline">
               <div class="tl-item">
-                <div class="tl-period">2024 — present</div>
+                <div class="tl-period">Sep 2024 - present</div>
                 <div class="tl-content">
                   <h3>Professional Bachelor in Applied Computer Science</h3>
                   <div class="tl-org">Thomas More University · Campus Geel</div>
                   <ul>
-                    <li>Programming in Python, Java, JavaScript, and PHP</li>
-                    <li>Web development: HTML, CSS, React, .NET</li>
-                    <li>Linux and Windows system administration</li>
-                    <li>Database design and management</li>
-                    <li>Project-based learning with real client assignments (SKIL2)</li>
+                    <li>Programming in Python &amp; Java</li>
+                    <li>Web Development with Laravel</li>
+                    <li>Webdesign with HTML &amp; CSS</li>
                   </ul>
                 </div>
               </div>
               <div class="tl-item">
-                <div class="tl-period">2016 — 2023</div>
+                <div class="tl-period">Sep 2016 - Jun 2023</div>
                 <div class="tl-content">
-                  <h3>Secondary Education — Science &amp; Mathematics</h3>
-                  <div class="tl-org">Provil-ION</div>
+                  <h3>Secondary Education - Science &amp; Mathematics</h3>
+                  <div class="tl-org">Provil-ION · Lommel</div>
                   <ul>
-                    <li>In-depth Mathematics, Biology, Chemistry and Physics</li>
-                    <li>French, English, and Dutch — all to proficiency</li>
-                    <li>Strong foundation in analytical and logical reasoning</li>
+                    <li>In-depth study of Mathematics</li>
+                    <li>Learned Biology, Chemistry, and Physics</li>
+                    <li>Proficient in French, English, and Dutch</li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Experience -->
+          <!-- Student Jobs -->
           <div>
-            <div class="cv-section-title">Experience</div>
+            <div class="cv-section-title">Student Jobs</div>
             <div class="timeline">
               <div class="tl-item">
-                <div class="tl-period">Oct–Dec 2023</div>
+                <div class="tl-period">Oct 2023 - Dec 2023</div>
                 <div class="tl-content">
                   <h3>IT Administrative Assistant</h3>
                   <div class="tl-org">Multiversum · Student job</div>
                   <ul>
-                    <li>Configured computers with required BIOS/boot settings</li>
-                    <li>Installed and set up standard software packages for employees</li>
-                    <li>Worked with both Windows and domain-joined systems</li>
-                    <li>First hands-on experience with enterprise IT environment</li>
+                    <li>Configured computers with required boot settings</li>
+                    <li>Installed standard software packages for employees and management</li>
                   </ul>
                 </div>
               </div>
-              <!--
-                ✏️ Add more work experience here if you have it:
-                <div class="tl-item">
-                  <div class="tl-period">Year</div>
-                  <div class="tl-content">
-                    <h3>Role</h3>
-                    <div class="tl-org">Company</div>
-                    <p>Description</p>
-                  </div>
-                </div>
-              -->
             </div>
           </div>
 
-          <!-- Technical skills -->
-          <div id="cv-skills">
-            <div class="cv-section-title">Technical Skills</div>
-            <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:0.75rem; max-width:none;">
-              Languages &amp; frameworks used in coursework and personal projects:
-            </p>
-            <div class="tech-grid">
-              <span class="tech-pill accent">Python</span>
-              <span class="tech-pill accent">JavaScript</span>
-              <span class="tech-pill">Java</span>
-              <span class="tech-pill">PHP</span>
-              <span class="tech-pill accent">HTML / CSS</span>
-              <span class="tech-pill">React (learning)</span>
-              <span class="tech-pill">.NET (learning)</span>
-              <span class="tech-pill accent">Linux / CLI</span>
-              <span class="tech-pill accent">Git / GitHub</span>
-              <span class="tech-pill">MySQL</span>
-              <span class="tech-pill">Windows Server</span>
-              <span class="tech-pill">Netlify</span>
+          <!-- Contact -->
+          <div class="cv-block">
+            <div class="cv-block-title">Contact</div>
+            <div class="contact-item">
+              <span class="ci">📞</span>
+              <a href="tel:+32472323433">+32 472 32 34 33</a>
+            </div>
+            <div class="contact-item">
+              <span class="ci">✉️</span>
+              <a href="mailto:more.dtail@gmail.com">more.dtail@gmail.com</a>
+            </div>
+            <div class="contact-item">
+              <span class="ci">💼</span>
+              <a href="https://linkedin.com/in/stefsmits2004" target="_blank" rel="noopener">linkedin.com/in/stefsmits2004</a>
             </div>
           </div>
-
-          <!-- Projects quick ref -->
-          <div>
-            <div class="cv-section-title">Notable Projects</div>
-            <div class="timeline">
-              <div class="tl-item">
-                <div class="tl-period">2024–2025</div>
-                <div class="tl-content">
-                  <h3>Dissectionary</h3>
-                  <div class="tl-org">SKIL2 Semester 1 · Group project</div>
-                  <p>Interactive anatomy education platform with quizzes — HTML, CSS, JavaScript.</p>
-                </div>
-              </div>
-              <div class="tl-item">
-                <div class="tl-period">2025 · ongoing</div>
-                <div class="tl-content">
-                  <h3>Poutrel Web App</h3>
-                  <div class="tl-org">SKIL2 Semester 2 · Group project</div>
-                  <p>Real-client fitness coaching platform — PHP, JavaScript, MySQL.</p>
-                </div>
-              </div>
-              <div class="tl-item">
-                <div class="tl-period">2024</div>
-                <div class="tl-content">
-                  <h3>Wordle Clone</h3>
-                  <div class="tl-org">Personal project · <a href="https://tooreal.netlify.app/wordle" target="_blank" rel="noopener" style="color:var(--green)">Live →</a></div>
-                  <p>Fully functional Wordle game built with vanilla JavaScript, no libraries.</p>
-                </div>
-              </div>
-            </div>
-            <p style="margin-top:1rem; font-size:0.82rem;">
-              <a href="projects.html" style="color:var(--green);">See all projects with full detail →</a>
-            </p>
-          </div>
-
         </div>
       </div>
     </div>

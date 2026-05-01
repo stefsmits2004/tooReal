@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stef Smits — Portfolio</title>
-  <meta name="description" content="Portfolio of Stef Smits — Applied Computer Science student at Thomas More Geel." />
+  <title>Portfolio - Stef Smits</title>
+  <meta name="description" content="Portfolio of Stef Smits - Applied Computer Science student at Thomas More Geel." />
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="css/style.css" />
   <style>
@@ -77,31 +77,23 @@
 
     .hero-avatar {
       position: relative;
-    }
-    .hero-avatar-ring {
-      width: 220px; height: 220px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--dark-green), var(--dark-cyan));
-      padding: 3px;
-      box-shadow: 0 0 60px rgba(119,187,153,0.15);
-    }
-    .hero-avatar-inner {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      background: var(--bg-card);
+      width: clamp(180px, 25vw, 300px);
+      height: auto;
+      aspect-ratio: auto;
+      border-radius: var(--radius-lg);
       overflow: hidden;
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    .hero-avatar-inner {
+      width: 100%; height: 100%;
+    }
     .hero-avatar-inner img {
       width: 100%; height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-    .hero-avatar-inner .avatar-placeholder {
-      font-size: 5rem;
-      user-select: none;
+      object-fit: contain;
     }
 
     /* ── Stat bar ────────────────────────────────── */
@@ -123,7 +115,7 @@
     }
     .stat:last-child { border-right: none; }
     .stat-number {
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-size: 2rem;
       font-weight: 800;
       color: var(--green);
@@ -186,7 +178,7 @@
       padding: 1.25rem 1.5rem;
     }
     .hl-title {
-      font-family: var(--ff-display);
+      font-family: var(--ff-display), sans-serif;
       font-weight: 700;
       font-size: 0.95rem;
       color: var(--green);
@@ -230,7 +222,7 @@
             I build things that work.
           </h1>
           <p class="hero-desc fade-up delay-2">
-            First-year IT student with a taste for clean code, practical software,
+            Second-year IT student with a taste for clean code, practical software,
             and the satisfaction of solving a problem the right way. Welcome to my portfolio.
           </p>
           <div class="hero-ctas fade-up delay-3">
@@ -241,16 +233,11 @@
         </div>
 
         <div class="hero-avatar fade-in delay-4">
-          <div class="hero-avatar-ring">
-            <div class="hero-avatar-inner">
-              <!-- Replace src with your actual profile photo -->
-              <img
-                src="assets/images/profile.jpg"
-                alt="Photo of Stef Smits"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-              />
-              <div class="avatar-placeholder" style="display:none;">🧑‍💻</div>
-            </div>
+          <div class="hero-avatar-inner">
+            <img
+              src="assets/images/profile.jpg"
+              alt="Photo of Stef Smits"
+            />
           </div>
         </div>
       </div>
@@ -266,7 +253,7 @@
           <span class="stat-desc">Technologies used</span>
         </div>
         <div class="stat">
-          <span class="stat-number">1</span>
+          <span class="stat-number">2</span>
           <span class="stat-desc">Year into the journey</span>
         </div>
         <div class="stat">
@@ -293,7 +280,7 @@
         <a href="projects.html" class="quick-card" data-reveal="0.1">
           <div class="qc-icon">🛠️</div>
           <h3>Projects</h3>
-          <p>Semester projects, personal builds, and concept work — with real detail.</p>
+          <p>Semester projects, personal builds, and concept work - with real detail.</p>
         </a>
         <a href="cv.html" class="quick-card" data-reveal="0.2">
           <div class="qc-icon">📄</div>
@@ -314,19 +301,19 @@
       <div class="highlights">
         <div class="hl" data-reveal="0">
           <div class="hl-title">Analytical thinking</div>
-          <p>I break problems into layers before writing a single line of code.</p>
+          <p>I’m careful in how I approach problems and try to consider the best solution first, depending on the situation.</p>
         </div>
         <div class="hl" data-reveal="0.1">
           <div class="hl-title">Attention to detail</div>
-          <p>Whether it's a UI component or a backend query — the small things matter.</p>
+          <p>I easily notice when something is off and naturally look for inconsistencies that can be improved or corrected.</p>
         </div>
         <div class="hl" data-reveal="0.2">
           <div class="hl-title">Fast learner</div>
-          <p>New stack? New concept? I pick things up quickly and apply them right away.</p>
+          <p>I understand new topics quickly by connecting them to prior knowledge and using logic to build a clear, simple mental model.</p>
         </div>
         <div class="hl" data-reveal="0.3">
           <div class="hl-title">Team player</div>
-          <p>I communicate clearly, share context, and make sure group work actually works.</p>
+          <p>I adapt to group dynamics and focus on contributing in a way that helps the team reach its goal.</p>
         </div>
       </div>
     </div>
