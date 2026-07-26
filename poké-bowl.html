@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Poké Bar - Kies wat je lekker vindt</title>
+<meta name="description" content="Bekijk de ingrediënten en stel rustig samen wat je straks in je bowl of wrap wil.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after{
+    box-sizing:border-box;
+  }
+  :root{
+    --white:#FFF;
+
+    /* Yellow */
+    --yellow-10:#FFFEFB;
+    --yellow-50:#FFFDF7;
+    --yellow-100:#FFF8E1;
+    --yellow-200:#FDECB8;
+    --yellow-500:#FFE79C;
+    --yellow-700:#EFA440;
+
+    /* Pink */
+    --pink-10:#FFFAFB;
+    --pink-50:#FFF5F7;
+    --pink-100:#FBE5E9;
+    --pink-200:#F8C7CD;
+    --pink-500:#F4A0A9;
+    --pink-700:#DF5565;
+
+    --ink:#3B342E;
+    --ink-soft:#6A6057;
+    --ink-softer:#9F9389FF;
+    --line:#E8E5E3;
+
+    --radius-lg:26px;
+    --radius-md:18px;
+    --radius-sm:12px;
+
+    --shadow-card:0 3px 14px rgba(180,140,110,0.08), 0 1px 2px rgba(180,140,110,0.06);
+    --shadow-float:0 16px 36px rgba(190,140,110,0.16);
+    --shadow-modal:0 20px 50px rgba(70,50,40,0.22);
+
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{box-sizing:border-box;}
+  html{ scroll-behavior:smooth; }
+  body{
+    width:100%;
+    overflow-x:hidden;
+    overscroll-behavior-x:none;
+    margin:0;
+    font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+    background:var(--white);
+    color:var(--ink);
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    touch-action:pan-y;
+  }
+  h1,h2,h3{ font-family:'DM Sans',system-ui,sans-serif; letter-spacing:-0.01em; }
+  button{ font-family:inherit; }
+  ul{ list-style:none; margin:0; padding:0; }
+  p{ margin:0; }
+  img{ max-width:100%; display:block; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{
+      animation-duration:0.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:0.001ms !important;
+      scroll-behavior:auto !important;
+    }
+  }
+
+  :focus-visible{
+    outline:3px solid var(--pink-200);
+    outline-offset:1px;
+    border-radius:6px;
+  }
+
+  /* =====================================================
+     BUTTONS (shared)
+  ===================================================== */
+  .btn-primary,.btn-secondary,.btn-ghost,.btn-danger,.btn-icon{
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease), background .15s var(--ease), opacity .15s var(--ease);
+    min-height:48px;
+    touch-action:manipulation;
+  }
+  .btn-primary{
+    background:var(--yellow-100);
+    color:var(--yellow-700);
+    padding:16px 28px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+  }
+  .btn-primary:hover{
+    background:var(--yellow-200);
+  }
+
+  .btn-secondary{
+    background: var(--pink-100);
+    color: var(--pink-700);
+    padding:16px 28px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+  }
+  .btn-secondary:hover{
+    background:var(--pink-200);
+  }
+
+  .btn-ghost{
+    background:var(--yellow-100);
+    color:var(--yellow-700);
+    padding:16px 28px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+  }
+  .btn-ghost:hover{
+    background:var(--yellow-200);
+  }
+
+  .btn-danger{
+    background: var(--pink-100);
+    color: var(--pink-700);
+    padding:16px 28px;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+  }
+  .btn-danger:hover{
+    background:var(--pink-200);
+  }
+
+  .btn-icon{
+    background:var(--pink-100);
+    color:var(--pink-700);
+    width:42px;
+    height:42px;
+    min-width:44px;
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    padding:0;
+  }
+  .btn-icon:hover{
+    background:var(--pink-200);
+  }
+
+  /* =====================================================
+     VIEW SWITCHING
+  ===================================================== */
+  .view{ display:none; min-height:100vh; }
+  .view.active{ display:block; }
+
+  /* =====================================================
+     HOME / STARTSCHERM — hero
+  ===================================================== */
+  .hero{
+    max-width:1040px;
+    margin:0 auto;
+    padding:28px 28px 8px;
+    text-align:center;
+  }
+  .hero-media{
+    width:100%;
+    max-width:460px;
+    margin:0 auto 28px;
+    aspect-ratio:4/3;
+    border-radius:32px;
+    overflow:hidden;
+    background:var(--white);
+  }
+  .hero-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .hero-title{
+    font-size:clamp(26px,4.2vw,36px);
+    font-weight:600;
+    margin:0 0 8px;
+    color:var(--ink);
+  }
+  .hero-sub{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0 0 26px;
+  }
+  .hero-cta{
+    min-width:230px;
+  }
+  .hero-cta svg{ width:17px;height:17px; }
+
+  /* =====================================================
+     OPGESLAGEN KEUZES — "Jouw keuzes"
+  ===================================================== */
+  .choices-wrap{
+    max-width:1040px;
+    margin:0 auto;
+    padding:52px 28px 100px;
+  }
+  .choices-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .choices-head h2{
+    font-size:21px;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+
+  .choices-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:24px;
+  }
+
+  .person-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    transition:.2s ease;
+    height:100%;
+  }
+
+  @keyframes cardIn{
+    from{
+      opacity:0;
+      transform:translateY(8px);
+    }
+    to{
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
+
+  .person-name{
+    margin:0;
+    font-size:1.35rem;
+    font-weight:600;
+    color:var(--ink);
+    text-align:center;
+  }
+
+  .person-groups{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .person-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .person-group-label{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+
+  .person-group-items{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .tag{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:7px 14px;
+
+    background:var(--pink-100);
+    border:1px solid var(--pink-200);
+
+    border-radius:999px;
+
+    color:var(--pink-700);
+
+    font-size:13px;
+  }
+
+  .person-empty{
+    margin:0;
+    color:var(--ink-soft);
+    font-style:italic;
+    text-align:center;
+  }
+
+  .person-actions{
+    display:flex;
+    gap:10px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    margin-top:8px;
+  }
+
+  .person-actions button{
+    flex:1;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--ink-soft);
+    display:none;
+  }
+  .empty-state.visible{ display:block; }
+  .empty-state p{ font-size:15px; }
+
+  /* =====================================================
+     BUILDER VIEW — "Keuze samenstellen"
+  ===================================================== */
+  .builder-top-bar{
+    position:sticky;
+    top:0;
+    z-index:80;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 20px;
+    background-color:var(--white);
+  }
+  .builder-top-bar h1{
+    flex:1;
+    font-size:17px;
+    font-weight:400;
+    margin:0;
+    color:var(--ink);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .builder-top-bar h1 b{ font-weight:600; }
+  .menu-toggle{ display:none; }
+
+  .builder-layout{
+    display:flex;
+    align-items:flex-start;
+    max-width:1120px;
+    margin:0 auto;
+  }
+
+  /* Desktop sidebar nav */
+  .category-nav{
+    position:sticky;
+    top:70px;
+    width:216px;
+    flex-shrink:0;
+    padding:36px 12px 40px 24px;
+  }
+  .category-nav ul{ display:flex; flex-direction:column; gap:4px; }
+  .category-nav a{
+    color:var(--ink);
+    background:var(--yellow-10);
+    border:1px solid var(--yellow-200);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 14px;
+    border-radius:12px;
+    font-size:14px;
+    text-decoration:none;
+    transition:background .15s ease, color .15s ease;
+  }
+  .category-nav a:hover{
+    background-color:var(--yellow-100);
+    color:var(--yellow-700);
+  }
+  .category-nav a.active{
+    background-color:var(--yellow-100);
+    color:var(--yellow-700);
+  }
+  .category-nav a .nav-count{
+    margin-left:auto;
+    font-size:11px;
+    color:var(--ink-softer);
+  }
+
+  .categories-root{ flex:1; min-width:0; padding-bottom:60px; }
+
+  .category{
+    padding:44px 24px 8px;
+    max-width:760px;
+    margin:0 auto;
+    scroll-margin-top:80px;
+  }
+  .category-head{ margin-bottom:22px; }
+  .category-kicker{
+    font-size:15px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .category h2{
+    font-size:26px;
+    margin:0 0 6px;
+    color:var(--ink);
+    font-weight:700;
+  }
+  .category-sub{
+    font-size:14px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .group-label{
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink);
+    margin:24px 0 12px;
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(152px,1fr));
+    gap:14px;
+  }
+
+  .item-card{
+    background-color:var(--yellow-10);
+    border:1px solid var(--yellow-200);
+    border-radius:20px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    transition:.2s ease;
+    cursor:pointer;
+    min-height:170px;
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+    user-select:none;
+  }
+
+  .item-card:hover, .item-card:hover .label{
+    background-color:var(--yellow-100);
+    border-color:var(--yellow-500);
+  }
+
+  .card-media{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    overflow:hidden;
+    background:var(--pink-10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .card-media img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    pointer-events:none;
+    user-select:none;
+    -webkit-user-drag:none;
+  }
+  .card-media .placeholder-icon{
+    width:32%;
+    height:32%;
+    color:var(--ink-softer);
+    opacity:.6;
+  }
+  .item-card .label{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.25;
+    text-align:center;
+    padding:0 2px 2px;
+  }
+
+  .item-card.selected, .item-card.selected .label{
+    background-color:var(--yellow-100);
+    border-color:var(--yellow-500);
+    color:var(--yellow-700);
+  }
+
+  /* Mobile menu overlay */
+  .mobile-menu-overlay{
+    position:fixed;
+    inset:0;
+    z-index:90;
+    display:none;
+  }
+  .mobile-menu-overlay.open{ display:block; }
+  .mobile-menu-panel{
+    position:absolute;
+    top:0; left:0; right:0;
+    background:var(--white);
+    padding:18px 20px 24px;
+    transform:translateY(-12px);
+    opacity:0;
+    animation:menuIn .2s var(--ease) forwards;
+  }
+  @keyframes menuIn{ to{ transform:translateY(0); opacity:1; } }
+  .mobile-menu-panel .panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .mobile-menu-panel .panel-head span{
+    font-size:17px;
+    color:var(--ink);
+  }
+  .mobile-menu-panel ul{ display:flex; flex-direction:column; gap:4px; }
+  .mobile-menu-panel a{
+    background:var(--yellow-10);
+    border:1px solid var(--yellow-200);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 10px;
+    border-radius:12px;
+    font-size:16px;
+    color:var(--ink);
+    text-decoration:none;
+  }
+  .mobile-menu-panel a.active{
+    background-color:var(--yellow-100);
+    color:var(--yellow-700);
+  }
+
+  /* Sticky save footer */
+  .builder-footer{
+    position:sticky;
+    bottom:0;
+    z-index:70;
+    background-color:var(--white);
+    padding:26px 20px 22px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .builder-footer .footer-hint{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .save-btn{ min-width:230px; }
+  .save-btn svg{ width:16px;height:16px; }
+
+  /* =====================================================
+     MODALS
+  ===================================================== */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    backdrop-filter:blur(4px);
+    z-index:200;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .modal-overlay[hidden]{ display:none; }
+  .modal{
+    background:#fff;
+    border-radius:24px;
+    max-width:400px;
+    width:100%;
+    padding:30px 26px 26px;
+    box-shadow:var(--shadow-modal);
+    animation:pop .2s var(--ease) both;
+  }
+  @keyframes pop{
+    from{ transform:scale(0.94); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+  }
+  .modal h2{
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .modal p{
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin-bottom:18px;
+  }
+  .modal input[type="text"]{
+    width:100%;
+    font-size:16px;
+    font-family:inherit;
+    padding:13px 15px;
+    border-radius:12px;
+    border:1px solid var(--ink-softer);
+    background:var(--white);
+    color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .modal input[type="text"]:focus{
+    outline:none;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    justify-content:flex-end;
+  }
+  .modal-actions button{ flex:1; }
+
+  /* =====================================================
+     RESPONSIVE
+  ===================================================== */
+  @media (max-width: 860px){
+    .category-nav{ display:none; }
+    .menu-toggle{ display:inline-flex; }
+    .builder-layout{ display:block; }
+  }
+  @media (max-width: 768px){
+    .choices-wrap{ padding:24px 16px 90px; }
+    .choices-grid{ grid-template-columns:1fr; gap:16px; }
+    .builder-layout{ grid-template-columns:1fr; }
+    .builder-sidebar{ position:static; width:100%; }
+    .builder-main{ width:100%; }
+    .builder-footer{ position:sticky; bottom:0; background:#fff;
+      padding: 16px 16px calc(env(safe-area-inset-bottom) + 16px);
+      border-top:1px solid var(--line); z-index:20; }
+    .person-actions{ flex-direction:column; }
+    .person-actions button{ width:100%; }
+    .category-nav{ overflow-x:auto; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+    .category-nav a{ scroll-snap-align:start; flex-shrink:0; }
+  }
+  @media (max-width: 520px){
+    .top-bar{ padding:18px 20px 0; }
+    .hero{ padding:22px 20px 4px; }
+    .hero-media{ border-radius:24px; }
+    .choices-wrap{ padding:20px 16px 90px; }
+    .choices-grid{ grid-template-columns:1fr; }
+    .category{ padding:32px 18px 4px; }
+    .card-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .person-actions{ flex-direction:column; }
+    .person-actions button{ width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- =====================================================
+       VIEW 1: STARTSCHERM / MIJN KEUZES
+  ====================================================== -->
+  <section id="view-choices" class="view active" aria-labelledby="heroHeading">
+    <div class="hero">
+      <div class="hero-media">
+        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1200&auto=format&fit=crop" alt="Poké bowl vol verse ingrediënten">
+      </div>
+      <h1 class="hero-title" id="heroHeading">Kies wat jij lekker vindt.</h1>
+      <p class="hero-sub">Neem gerust je tijd.</p>
+      <button class="btn-secondary hero-cta" id="heroCtaBtn" type="button">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Maak je keuze
+      </button>
+    </div>
+
+    <div class="choices-wrap">
+      <div class="choices-head">
+        <h2>Jouw keuzes</h2>
+        <button class="btn-primary" id="newChoiceBtn" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Nieuwe keuze
+        </button>
+      </div>
+
+      <div class="choices-grid" id="choicesGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <p>Nog geen keuzes bewaard</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================
+       VIEW 2: KEUZE SAMENSTELLEN
+  ====================================================== -->
+  <section id="view-builder" class="view" aria-labelledby="builderHeading">
+    <header class="builder-top-bar">
+      <button class="btn-icon" id="backBtn" type="button" aria-label="Terug naar jouw keuzes">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+      <h1 id="builderHeading">Keuze voor <b id="builderName"></b></h1>
+      <button class="btn-secondary menu-toggle" id="menuToggleBtn" type="button" aria-expanded="false" aria-controls="mobileMenuOverlay">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+        Menu
+      </button>
+    </header>
+
+    <div class="builder-layout">
+      <nav class="category-nav" id="categoryNav" aria-label="Categorieën">
+        <ul id="categoryNavList"></ul>
+      </nav>
+      <main class="categories-root" id="categoriesRoot"></main>
+    </div>
+
+    <div class="builder-footer">
+      <button class="btn-secondary save-btn" id="saveBtn" type="button">
+        Bewaar mijn keuze
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Mobile category menu -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+  <div class="mobile-menu-panel">
+    <div class="panel-head">
+      <span>Categorieën</span>
+      <button class="btn-icon" id="mobileMenuCloseBtn" type="button" aria-label="Sluit menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <ul id="mobileMenuList"></ul>
+  </div>
+</div>
+
+<!-- Name prompt modal -->
+<div class="modal-overlay" id="nameModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+    <h2 id="nameModalTitle">Voor wie is deze keuze?</h2>
+    <p>Vul jouw naam hieronder in zodat we jouw keuze kunnen opslaan.</p>
+    <label for="nameInput" style="position:absolute;left:-9999px;">Naam</label>
+    <input type="text" id="nameInput" placeholder="Naam" autocomplete="off">
+    <div class="modal-actions">
+      <button class="btn-secondary" id="nameCancelBtn" type="button">Annuleren</button>
+      <button class="btn-primary" id="nameConfirmBtn" type="button">Doorgaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="confirmModal" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+    <h2 id="confirmModalTitle">Keuze verwijderen?</h2>
+    <p id="confirmModalText">Deze keuze wordt permanent verwijderd.</p>
+    <div class="modal-actions">
+      <button class="btn-primary" id="confirmCancelBtn" type="button">Annuleren</button>
+      <button class="btn-secondary" id="confirmOkBtn" type="button">Verwijderen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =====================================================
+     CONFIG — pas hier het gedrag van de app aan
+  ===================================================== */
+  const ENABLE_CATEGORY_NAV = true; // zet op false om de categorie-navigatie volledig te verbergen
+  const STORAGE_KEY = "jouwBowlKeuzes.v2";
+
+  /* =====================================================
+     MENU DATA
+     De afbeelding van elk item wordt gezocht op
+     images/ingrediënten/{id}.jpg — zet daar je eigen foto
+     met de bijhorende bestandsnaam en ze verschijnt automatisch.
+     Voeg een nieuwe kaart toe door simpelweg een object aan
+     de juiste "items" lijst hieronder toe te voegen.
+  ===================================================== */
+  const CATEGORIES = [
+    /* ===================== BASIS INGREDIËNTEN ===================== */
+    {
+      id: "basis",
+      title: "Basis",
+      sub: "Kies de bodem van jouw bowl of wrap.",
+      summaryLabel: "Basis",
+      groups: [
+        { items: [
+          { id:"wraps", label:"Wraps" },
+          { id:"nachos", label:"Nacho's" },
+          { id:"sushi-rijst", label:"Sushi-rijst" },
+          { id:"bloemkoolrijst", label:"Bloemkoolrijst" },
+          { id:"salade", label:"Salade" },
+        ]}
+      ]
+    },
+    /* ===================== EIWIT INGREDIËNTEN ===================== */
+    {
+      id: "eiwit",
+      title: "Eiwit",
+      sub: "Kies een of meerdere eiwitbronnen.",
+      summaryLabel: "Eiwit",
+      groups: [
+        { items: [
+          { id:"rund-gehakt", label:"Rund gehakt" },
+          { id:"kippendijen", label:"Kippendijen" },
+          { id:"gerookte-zalm", label:"Gerookte zalm" },
+          { id:"steak", label:"Steak" },
+        ]}
+      ]
+    },
+    /* ===================== MIX-INS INGREDIËNTEN ===================== */
+    {
+      id: "mixins",
+      title: "Mix-ins",
+      sub: "Groenten en fruit, kies zoveel je wil.",
+      summaryLabel: "Mix-ins",
+      groups: [
+        { label:"Groenten", items: [
+          { id:"komkommer", label:"Komkommer" },
+          { id:"kerstomaten", label:"Kerstomaten" },
+          { id:"maïs", label:"Maïs" },
+          { id:"edamame", label:"Edamame" },
+          { id:"wortel", label:"Wortel" },
+          { id:"salade", label:"Salade" },
+          { id:"paarse-bonen", label:"Paarse bonen" },
+        ]},
+        { label:"Fruit", items: [
+          { id:"mango", label:"Mango" },
+          { id:"ananas", label:"Ananas" },
+          { id:"appel", label:"Appel" },
+        ]}
+      ]
+    },
+    /* ===================== TOPPINGS INGREDIËNTEN ===================== */
+    {
+      id: "toppings",
+      title: "Toppings",
+      sub: "De finishing touch voor jouw bowl.",
+      summaryLabel: "Toppings",
+      groups: [
+        { items: [
+          { id:"cashewnoten", label:"Cashewnoten" },
+          { id:"gebakken-ui", label:"Gebakken ui" },
+          { id:"sesammix", label:"Sesammix" },
+          { id:"kroepoek", label:"Kroepoek" },
+          { id:"lente-uitjes", label:"Lente-uitjes" },
+          { id:"nachos", label:"Nacho's" },
+        ]}
+      ]
+    },
+    /* ===================== SAUS INGREDIËNTEN ===================== */
+    {
+      id: "saus",
+      title: "Saus",
+      sub: "Kies jouw favoriete saus, of meerdere.",
+      summaryLabel: "Saus",
+      groups: [
+        { items: [
+          { id:"soja-sesam", label:"Soja-sesam" },
+          { id:"teriyaki", label:"Teriyaki" },
+          { id:"yoghurt-knoflook", label:"Yoghurt-knoflook" },
+          { id:"mayonaise", label:"Mayonaise" },
+          { id:"pittige-mayo", label:"Pittige mayo" },
+          { id:"cocktail", label:"Cocktail" },
+        ]}
+      ]
+    },
+  ];
+
+  const ITEM_INDEX = {};
+  CATEGORIES.forEach(cat => {
+    cat.groups.forEach(g => g.items.forEach(it => {
+      ITEM_INDEX[it.id] = { ...it, categoryId: cat.id };
+    }));
+  });
+
+  /* =====================================================
+     STORAGE HELPERS
+     Opgeslagen vorm: [{ id, name, categories:{catId:[itemId,...]}, savedAt }]
+  ===================================================== */
+  function loadSaved(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    }catch(e){
+      console.warn("Kon opgeslagen keuzes niet lezen:", e);
+      return [];
+    }
+  }
+  function persistSaved(list){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }catch(e){
+      console.warn("Kon keuzes niet opslaan:", e);
+    }
+  }
+  function uid(){
+    return "id-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2,8);
+  }
+
+  let savedChoices = loadSaved();
+
+  /* =====================================================
+     BUILDER STATE
+  ===================================================== */
+  let builderState = null; // { editingId, name, categories:{catId:[itemId]} }
+
+  function emptyCategories(){
+    const obj = {};
+    CATEGORIES.forEach(c => obj[c.id] = []);
+    return obj;
+  }
+
+  /* =====================================================
+     VIEW SWITCHING
+  ===================================================== */
+  const viewChoices = document.getElementById("view-choices");
+  const viewBuilder = document.getElementById("view-builder");
+
+  function showView(name){
+    viewChoices.classList.toggle("active", name === "choices");
+    viewBuilder.classList.toggle("active", name === "builder");
+    window.scrollTo({ top:0, behavior:"auto" });
+  }
+
+  /* =====================================================
+     RENDER: JOUW KEUZES (premium overzicht)
+  ===================================================== */
+  const choicesGrid = document.getElementById("choicesGrid");
+  const emptyState = document.getElementById("emptyState");
+
+  function renderChoices(){
+    choicesGrid.innerHTML = "";
+    emptyState.classList.toggle("visible", savedChoices.length === 0);
+
+    savedChoices.forEach(entry => {
+      const card = document.createElement("article");
+      card.className = "person-card";
+
+      const name = document.createElement("h2");
+      name.className = "person-name";
+      name.textContent = entry.name;
+      card.appendChild(name);
+
+      const groupsWrap = document.createElement("div");
+      groupsWrap.className = "person-groups";
+
+      let anySelected = false;
+      CATEGORIES.forEach(cat => {
+        const ids = (entry.categories && entry.categories[cat.id]) || [];
+        if(ids.length === 0) return;
+        anySelected = true;
+
+        const row = document.createElement("div");
+        const label = document.createElement("div");
+        label.className = "person-group-label";
+        label.textContent = cat.summaryLabel;
+        row.appendChild(label);
+
+        const itemsWrap = document.createElement("div");
+        itemsWrap.className = "person-group-items";
+        ids.forEach(id => {
+          const it = ITEM_INDEX[id];
+          if(!it) return;
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.textContent = it.label;
+          itemsWrap.appendChild(tag);
+        });
+        row.appendChild(itemsWrap);
+        groupsWrap.appendChild(row);
+      });
+
+      if(!anySelected){
+        const empty = document.createElement("p");
+        empty.className = "person-empty";
+        empty.textContent = "Nog niets gekozen.";
+        groupsWrap.appendChild(empty);
+      }
+
+      card.appendChild(groupsWrap);
+
+      const actions = document.createElement("div");
+      actions.className = "person-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn-primary";
+      editBtn.type = "button";
+      editBtn.textContent = "Bewerk";
+      editBtn.addEventListener("click", () => openBuilderForEdit(entry.id));
+
+      const dupBtn = document.createElement("button");
+      dupBtn.className = "btn-primary";
+      dupBtn.type = "button";
+      dupBtn.textContent = "Dupliceer";
+      dupBtn.addEventListener("click", () => duplicateEntry(entry.id));
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn-secondary";
+      delBtn.type = "button";
+      delBtn.textContent = "Verwijder";
+      delBtn.addEventListener("click", () => requestDelete(entry.id, entry.name));
+
+      actions.appendChild(editBtn);
+      actions.appendChild(dupBtn);
+      actions.appendChild(delBtn);
+      card.appendChild(actions);
+
+      choicesGrid.appendChild(card);
+    });
+  }
+
+  /* =====================================================
+     RENDER: BUILDER
+  ===================================================== */
+  const categoriesRoot = document.getElementById("categoriesRoot");
+  const builderNameEl = document.getElementById("builderName");
+  const categoryNavList = document.getElementById("categoryNavList");
+  const mobileMenuList = document.getElementById("mobileMenuList");
+  const categoryNav = document.getElementById("categoryNav");
+  const menuToggleBtn = document.getElementById("menuToggleBtn");
+
+  function placeholderIconSVG(){
+    return `<svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 12a8 8 0 0 0 16 0" />
+      <path d="M4 12h16" />
+      <path d="M12 4v2" />
+      <path d="M8.5 4.6l.6 1.9" />
+      <path d="M15.5 4.6l-.6 1.9" />
+    </svg>`;
+  }
+
+  function buildCategoriesRoot(){
+    categoriesRoot.innerHTML = "";
+    categoryNavList.innerHTML = "";
+    mobileMenuList.innerHTML = "";
+
+    CATEGORIES.forEach((cat) => {
+      /* -------- nav entries (desktop + mobile delen dezelfde structuur) -------- */
+      const navLi = document.createElement("li");
+      const navA = document.createElement("a");
+      navA.href = "#cat-" + cat.id;
+      navA.dataset.cat = cat.id;
+      navA.innerHTML = `<span aria-hidden="true"></span><span>${cat.title}</span><span class="nav-count" id="navcount-${cat.id}"></span>`;
+      navA.addEventListener("click", (e) => {
+        e.preventDefault();
+        scrollToCategory(cat.id);
+      });
+      navLi.appendChild(navA);
+      categoryNavList.appendChild(navLi);
+
+      const mNavLi = document.createElement("li");
+      const mNavA = document.createElement("a");
+      mNavA.href = "#cat-" + cat.id;
+      mNavA.dataset.cat = cat.id;
+      mNavA.textContent = cat.title;
+      mNavA.addEventListener("click", (e) => {
+        e.preventDefault();
+        scrollToCategory(cat.id);
+        closeMobileMenu();
+      });
+      mNavLi.appendChild(mNavA);
+      mobileMenuList.appendChild(mNavLi);
+
+      /* -------- categorie sectie -------- */
+      const section = document.createElement("section");
+      section.className = "category";
+      section.id = "cat-" + cat.id;
+
+      const head = document.createElement("div");
+      head.className = "category-head";
+      head.innerHTML = `
+        <h2>${cat.title}</h2>
+        <p class="category-sub">${cat.sub}</p>
+      `;
+      section.appendChild(head);
+
+      cat.groups.forEach(group => {
+        if(group.label){
+          const gl = document.createElement("div");
+          gl.className = "group-label";
+          gl.textContent = group.label;
+          section.appendChild(gl);
+        }
+        const grid = document.createElement("div");
+        grid.className = "card-grid";
+        group.items.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "item-card";
+          card.tabIndex = 0;
+          card.setAttribute("role","checkbox");
+          card.setAttribute("aria-checked","false");
+          card.setAttribute("aria-label", item.label);
+          card.dataset.id = item.id;
+          card.dataset.cat = cat.id;
+
+          const media = document.createElement("div");
+          media.className = "card-media";
+          media.innerHTML = placeholderIconSVG();
+
+          const img = document.createElement("img");
+          img.alt = "";
+          img.loading = "lazy";
+          img.src = "assets/poké-bowl/" + item.id + ".jpg";
+          img.addEventListener("error", () => { img.remove(); });
+          media.appendChild(img);
+
+          const label = document.createElement("div");
+          label.className = "label";
+          label.textContent = item.label;
+
+          card.appendChild(media);
+          card.appendChild(label);
+
+          card.addEventListener("click", () => toggleItem(cat.id, item.id, card));
+          card.addEventListener("keydown", (e) => {
+            if(e.key === "Enter" || e.key === " "){
+              e.preventDefault();
+              toggleItem(cat.id, item.id, card);
+            }
+          });
+
+          grid.appendChild(card);
+        });
+        section.appendChild(grid);
+      });
+
+      categoriesRoot.appendChild(section);
+    });
+
+    categoryNav.style.display = ENABLE_CATEGORY_NAV ? "" : "none";
+    menuToggleBtn.style.display = ENABLE_CATEGORY_NAV ? "" : "none";
+  }
+
+  function scrollToCategory(catId){
+    const el = document.getElementById("cat-" + catId);
+    if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  function toggleItem(catId, itemId, cardEl){
+    const list = builderState.categories[catId];
+    const pos = list.indexOf(itemId);
+    if(pos > -1){
+      list.splice(pos, 1);
+      cardEl.classList.remove("selected");
+      cardEl.setAttribute("aria-checked","false");
+    }else{
+      list.push(itemId);
+      cardEl.classList.add("selected");
+      cardEl.setAttribute("aria-checked","true");
+    }
+    updateNavCounts();
+  }
+
+  function updateNavCounts(){
+    CATEGORIES.forEach(cat => {
+      const count = builderState.categories[cat.id].length;
+      const el = document.getElementById("navcount-" + cat.id);
+      if(el) el.textContent = count > 0 ? String(count) : "";
+    });
+  }
+
+  function applyBuilderStateToCards(){
+    CATEGORIES.forEach(cat => {
+      const list = builderState.categories[cat.id];
+      document.querySelectorAll(`.item-card[data-cat="${cat.id}"]`).forEach(card => {
+        const isSelected = list.includes(card.dataset.id);
+        card.classList.toggle("selected", isSelected);
+        card.setAttribute("aria-checked", isSelected ? "true" : "false");
+      });
+    });
+    updateNavCounts();
+  }
+
+  /* -------- scrollspy voor nav-highlighting -------- */
+  let navObserver = null;
+  function setupScrollSpy(){
+    if(navObserver) navObserver.disconnect();
+    const sections = CATEGORIES.map(c => document.getElementById("cat-" + c.id)).filter(Boolean);
+    navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          const id = entry.target.id.replace("cat-","");
+          document.querySelectorAll(`.category-nav a, .mobile-menu-panel a`).forEach(a => {
+            a.classList.toggle("active", a.dataset.cat === id);
+          });
+        }
+      });
+    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
+    sections.forEach(s => navObserver.observe(s));
+  }
+
+  /* =====================================================
+     MOBILE MENU
+  ===================================================== */
+  const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
+  function openMobileMenu(){
+    mobileMenuOverlay.classList.add("open");
+    menuToggleBtn.setAttribute("aria-expanded","true");
+  }
+  function closeMobileMenu(){
+    mobileMenuOverlay.classList.remove("open");
+    menuToggleBtn.setAttribute("aria-expanded","false");
+  }
+  menuToggleBtn.addEventListener("click", openMobileMenu);
+  document.getElementById("mobileMenuCloseBtn").addEventListener("click", closeMobileMenu);
+  mobileMenuOverlay.addEventListener("click", (e) => {
+    if(e.target === mobileMenuOverlay) closeMobileMenu();
+  });
+
+  /* =====================================================
+     OPEN BUILDER (nieuw / bewerken)
+  ===================================================== */
+  function openBuilderForNew(name){
+    builderState = { editingId:null, name:name.trim(), categories: emptyCategories() };
+    launchBuilder();
+  }
+  function openBuilderForEdit(entryId){
+    const entry = savedChoices.find(e => e.id === entryId);
+    if(!entry) return;
+    const cats = emptyCategories();
+    CATEGORIES.forEach(c => {
+      cats[c.id] = (entry.categories && entry.categories[c.id]) ? [...entry.categories[c.id]] : [];
+    });
+    builderState = { editingId: entry.id, name: entry.name, categories: cats };
+    launchBuilder();
+  }
+  function launchBuilder(){
+    builderNameEl.textContent = builderState.name;
+    buildCategoriesRoot();
+    applyBuilderStateToCards();
+    showView("builder");
+    setupScrollSpy();
+  }
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    builderState = null;
+    showView("choices");
+  });
+
+  document.getElementById("saveBtn").addEventListener("click", () => {
+    if(!builderState) return;
+    const now = new Date().toISOString();
+    if(builderState.editingId){
+      const idx = savedChoices.findIndex(e => e.id === builderState.editingId);
+      if(idx > -1){
+        savedChoices[idx] = {
+          ...savedChoices[idx],
+          name: builderState.name,
+          categories: builderState.categories,
+          savedAt: now
+        };
+      }
+    }else{
+      savedChoices.push({
+        id: uid(),
+        name: builderState.name,
+        categories: builderState.categories,
+        savedAt: now
+      });
+    }
+    persistSaved(savedChoices);
+    builderState = null;
+    renderChoices();
+    showView("choices");
+  });
+
+  /* =====================================================
+     NIEUWE KEUZE FLOW (naam invoeren)
+  ===================================================== */
+  const nameModal = document.getElementById("nameModal");
+  const nameInput = document.getElementById("nameInput");
+  const nameModalTitle = document.getElementById("nameModalTitle");
+  let nameModalMode = "new"; // "new" | "duplicate"
+  let nameModalDuplicateSource = null;
+
+  function openNameModal(mode, prefill){
+    nameModalMode = mode;
+    nameModalTitle.textContent = mode === "duplicate" ? "Naam voor de kopie" : "Voor wie is deze keuze?";
+    nameInput.value = prefill || "";
+    nameModal.hidden = false;
+    setTimeout(() => nameInput.focus(), 10);
+  }
+  function closeNameModal(){
+    nameModal.hidden = true;
+    nameModalDuplicateSource = null;
+  }
+
+  document.getElementById("newChoiceBtn").addEventListener("click", () => {
+    openNameModal("new", "");
+  });
+  document.getElementById("heroCtaBtn").addEventListener("click", () => {
+    openNameModal("new", "");
+  });
+  document.getElementById("nameCancelBtn").addEventListener("click", closeNameModal);
+  nameModal.addEventListener("click", (e) => { if(e.target === nameModal) closeNameModal(); });
+
+  function confirmNameModal(){
+    const value = nameInput.value.trim();
+    if(!value){
+      nameInput.focus();
+      return;
+    }
+    if(nameModalMode === "duplicate" && nameModalDuplicateSource){
+      const source = savedChoices.find(e => e.id === nameModalDuplicateSource);
+      if(source){
+        savedChoices.push({
+          id: uid(),
+          name: value,
+          categories: JSON.parse(JSON.stringify(source.categories)),
+          savedAt: new Date().toISOString()
+        });
+        persistSaved(savedChoices);
+        renderChoices();
+      }
+      closeNameModal();
+    }else{
+      closeNameModal();
+      openBuilderForNew(value);
+    }
+  }
+  document.getElementById("nameConfirmBtn").addEventListener("click", confirmNameModal);
+  nameInput.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){ e.preventDefault(); confirmNameModal(); }
+    if(e.key === "Escape"){ closeNameModal(); }
+  });
+
+  function duplicateEntry(entryId){
+    const source = savedChoices.find(e => e.id === entryId);
+    if(!source) return;
+    nameModalDuplicateSource = entryId;
+    openNameModal("duplicate", source.name + " (kopie)");
+  }
+
+  /* =====================================================
+     VERWIJDER FLOW
+  ===================================================== */
+  const confirmModal = document.getElementById("confirmModal");
+  const confirmModalText = document.getElementById("confirmModalText");
+  let pendingDeleteId = null;
+
+  function requestDelete(entryId, name){
+    pendingDeleteId = entryId;
+    confirmModalText.textContent = `De keuze van ${name} wordt permanent verwijderd.`;
+    confirmModal.hidden = false;
+  }
+  function closeConfirmModal(){
+    confirmModal.hidden = true;
+    pendingDeleteId = null;
+  }
+  document.getElementById("confirmCancelBtn").addEventListener("click", closeConfirmModal);
+  confirmModal.addEventListener("click", (e) => { if(e.target === confirmModal) closeConfirmModal(); });
+  document.getElementById("confirmOkBtn").addEventListener("click", () => {
+    if(pendingDeleteId){
+      savedChoices = savedChoices.filter(e => e.id !== pendingDeleteId);
+      persistSaved(savedChoices);
+      renderChoices();
+    }
+    closeConfirmModal();
+  });
+
+  /* =====================================================
+     INIT
+  ===================================================== */
+  renderChoices();
+  showView("choices");
+
+})();
+</script>
+</body>
+</html>
