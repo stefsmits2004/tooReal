@@ -605,6 +605,7 @@ drawl
 drawn
 dread
 dream
+dreck
 dress
 dried
 drier
@@ -1509,6 +1510,7 @@ pound
 pouty
 power
 prank
+prate
 prawn
 preen
 press
