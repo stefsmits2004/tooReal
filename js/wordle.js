@@ -21,11 +21,11 @@
   let solverCurrentInput = "";
   let WORDS = []; // Will be loaded from file
   let wordsLoaded = false; // Track if words have been loaded
-  let firstGuess = (localStorage.getItem("wdl_first_guess") || "least").toLowerCase();
+  let firstGuess = (localStorage.getItem("wdl_first_guess") || "slate").toLowerCase();
   
   // Validate stored first guess, reset to default if invalid
   if (!firstGuess || !/^[a-z]{5}$/.test(firstGuess)) {
-    firstGuess = "least";
+    firstGuess = "slate";
   }
 
   const settings = JSON.parse(localStorage.getItem("wdl_settings") || "{}");
@@ -82,7 +82,6 @@
 
     applySettings();
     buildBoard();
-    buildKeyboard();
     startNewGame();
     attachEvents();
     updateFirstGuessBar();
@@ -140,65 +139,6 @@
   }
 
   /* =========================================================
-     KEYBOARD
-     ========================================================= */
-  const KB_ROWS = [
-    ["Q","W","E","R","T","Y","U","I","O","P"],
-    ["A","S","D","F","G","H","J","K","L"],
-    ["ENTER","Z","X","C","V","B","N","M","BACK"]
-  ];
-
-  function buildKeyboard() {
-    const kb = document.getElementById("keyboard");
-    kb.innerHTML = "";
-    KB_ROWS.forEach(letters => {
-      const row = document.createElement("div");
-      row.className = "keyboard-row";
-      letters.forEach(l => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        const isWide = l === "ENTER" || l === "BACK";
-        btn.className = "key" + (isWide ? " wide" : "");
-        btn.textContent = l === "BACK" ? "\u232B" : l;
-        btn.setAttribute("aria-label", l === "BACK" ? "Backspace" : l);
-        btn.id = l === "BACK" ? "key-BACKSPACE" : l === "ENTER" ? "key-ENTER" : `key-${l}`;
-        const keyVal = l === "BACK" ? "BACKSPACE" : l;
-        // pointerdown + preventDefault stops the physical keyboard from also firing
-        btn.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
-          handleKey(keyVal);
-        });
-        row.appendChild(btn);
-      });
-      kb.appendChild(row);
-    });
-  }
-
-  const keyColors = {};
-
-  function updateKeyColor(letter, patternChar) {
-    const priority = { g: 2, y: 1, b: 0 };
-    const cur = keyColors[letter] !== undefined ? keyColors[letter] : -1;
-    const next = priority[patternChar];
-    if (next > cur) {
-      keyColors[letter] = next;
-      const el = document.getElementById(`key-${letter}`);
-      if (!el) return;
-      el.className = el.className.replace(/ is-(gray|yellow|green)/g, "");
-      if (next === 2) el.classList.add("is-green");
-      else if (next === 1) el.classList.add("is-yellow");
-      else el.classList.add("is-gray");
-    }
-  }
-
-  function resetKeyboardColors() {
-    Object.keys(keyColors).forEach(k => delete keyColors[k]);
-    document.querySelectorAll(".key").forEach(k => {
-      k.className = k.className.replace(/ is-(gray|yellow|green)/g, "");
-    });
-  }
-
-  /* =========================================================
      NEW GAME
      ========================================================= */
   function startNewGame() {
@@ -210,7 +150,6 @@
     currentGuess = [];
     solverGuesses = [];
     buildBoard();
-    resetKeyboardColors();
     hideSolverPanel();
     removeSolverResetButton();
     document.getElementById("word-reveal").style.display = "none";
@@ -227,6 +166,7 @@
       currentGuess = fg.split("");
       currentCol = 5;
     }
+    syncMobileGuessInput();
   }
 
   /* =========================================================
@@ -237,6 +177,26 @@
     key = key.toUpperCase();
     if (mode === "play") handlePlayKey(key);
     else handleSolveKey(key);
+    syncMobileGuessInput();
+  }
+
+  function syncMobileGuessInput() {
+    const input = document.getElementById("mobile-guess-input");
+    if (!input) return;
+    input.value = mode === "play" ? currentGuess.join("") : solverCurrentInput;
+  }
+
+  function setMobileGuess(value) {
+    const word = value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, WORD_LEN);
+    if (mode === "play") {
+      if (gameOver) return;
+      while (currentCol > 0) deleteLetter();
+      for (const letter of word) addLetter(letter);
+    } else {
+      solverCurrentInput = word;
+      refreshSolverInputRow();
+    }
+    syncMobileGuessInput();
   }
 
   /* ---- PLAY ---- */
@@ -315,7 +275,6 @@
           tile.textContent = word[i];
           board[rowIdx][i].state = p === "g" ? 2 : p === "y" ? 1 : 0;
           tile.style.transform = "rotateX(0deg)";
-          updateKeyColor(word[i], p);
         }, 250);
       }, i * DELAY);
     });
@@ -571,6 +530,7 @@
         tile.className = "wordle-tile has-letter";
       }
     }
+    syncMobileGuessInput();
   }
 
   function showSolverPanel() { document.getElementById("solver-panel").classList.add("visible"); }
@@ -602,13 +562,13 @@
     solverGuesses = [];
     solverCurrentInput = "";
     buildBoard();
-    resetKeyboardColors();
     hideSolverPanel();
     // Prefill first guess into solver input if set
     if (firstGuess && /^[a-z]{5}$/.test(firstGuess) && WORDS.includes(firstGuess)) {
       solverCurrentInput = firstGuess.toUpperCase();
       refreshSolverInputRow();
     }
+    syncMobileGuessInput();
     showToast("Solver reset");
   }
 
@@ -784,7 +744,6 @@
       document.getElementById("word-reveal").style.display = "none";
       document.getElementById("play-again-btn").classList.remove("visible");
       buildBoard();
-      resetKeyboardColors();
       currentRow = 0;
       currentCol = 0;
       gameOver = false;
@@ -866,9 +825,20 @@
       if (e.key === "Enter") { e.preventDefault(); setFirstGuess(fgInput.value); }
     });
     document.getElementById("fg-set-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess(fgInput.value); });
-    document.getElementById("fg-least-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess("least"); });
-    document.getElementById("fg-blind-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess("blind"); });
+    document.getElementById("fg-slate-btn").addEventListener("pointerdown", e => { e.preventDefault(); setFirstGuess("slate"); });
 
+    const mobileInput = document.getElementById("mobile-guess-input");
+    mobileInput.addEventListener("input", () => setMobileGuess(mobileInput.value));
+    mobileInput.addEventListener("keydown", e => {
+      e.stopPropagation();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleKey("ENTER");
+      }
+    });
+    document.getElementById("board-container").addEventListener("click", () => {
+      if (!document.querySelector(".slide-panel.open")) mobileInput.focus();
+    });
 
     // Sync settings toggles
     document.getElementById("toggle-hard").checked = settings.hardMode;

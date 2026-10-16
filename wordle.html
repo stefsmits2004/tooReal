@@ -53,12 +53,11 @@
     <!-- First Guess Bar -->
     <div id="first-guess-bar">
       <label>First:</label>
-      <span id="first-guess-display">LEAST</span>
+      <span id="first-guess-display">SLATE</span>
       <input id="first-guess-input" aria-label="First guess word" maxlength="5" placeholder="WORD" autocomplete="off" spellcheck="false" />
       <div id="first-guess-buttons">
         <button class="fg-btn" id="fg-set-btn" title="Set">Set</button>
-        <button class="fg-btn suggest" id="fg-least-btn" title="Use LEAST (avg 3.92)">Least</button>
-        <button class="fg-btn suggest-alt" id="fg-blind-btn" title="Use BLIND (hard mode safe)">Blind</button>
+        <button class="fg-btn suggest" id="fg-slate-btn" title="Use SLATE (recommended)">Slate</button>
       </div>
     </div>
 
@@ -76,8 +75,12 @@
       </div>
     </div>
 
-    <!-- Keyboard -->
-    <div id="keyboard"></div>
+    <!-- Native input keeps phone keyboard support; letters render in the board -->
+    <div id="mobile-input-row" aria-hidden="true">
+      <input id="mobile-guess-input" type="text" inputmode="text" autocapitalize="characters"
+        aria-label="Type your guess" maxlength="5"
+        autocomplete="off" spellcheck="false" />
+    </div>
 
     <!-- ===== WORD REVEAL (failed game) ===== -->
     <div id="word-reveal"></div>

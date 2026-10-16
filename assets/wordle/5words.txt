@@ -1097,6 +1097,7 @@ junta
 junto
 juror
 kappa
+karat
 karma
 kayak
 kazoo
@@ -1310,6 +1311,7 @@ mouth
 mover
 movie
 mower
+moxie
 mucky
 mucus
 muddy

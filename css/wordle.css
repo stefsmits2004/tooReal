@@ -5,6 +5,9 @@
 
 /* ---------- CSS Variables ---------- */
 :root {
+  --phone-width: 420px;
+  --panel-width: min(350px, calc(100vw - 24px));
+  --solver-max-height: 300px;
   --color-tone-1: #1a1a1b;
   --color-tone-2: #787c7e;
   --color-tone-3: #878a8c;
@@ -71,7 +74,7 @@ html, body {
 
 body {
   font-family: var(--font-family);
-  background: var(--color-background);
+  background: var(--color-tone-5);
   color: var(--color-tone-1);
   display: flex;
   flex-direction: column;
@@ -81,11 +84,14 @@ body {
   overscroll-behavior: contain;
   min-height: 100vh;
   min-height: 100dvh;
+  align-items: center;
 }
 
 /* ---------- Header ---------- */
 #wordle-header {
   height: var(--header-height);
+  width: 100%;
+  max-width: var(--phone-width);
   border-bottom: 1px solid var(--color-tone-4);
   display: flex;
   align-items: center;
@@ -164,18 +170,21 @@ body {
 
 /* ---------- Main Game Area ---------- */
 #game-container {
-  flex: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  overflow-y: visible;
+  overflow-y: auto;
   overflow-x: hidden;
   padding: 8px 12px 16px 12px;
   gap: 8px;
   min-height: 0;
   width: 100%;
-  max-width: 100vw;
+  max-width: var(--phone-width);
+  background: var(--color-background);
+  border-left: 1px solid var(--color-tone-4);
+  border-right: 1px solid var(--color-tone-4);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -185,8 +194,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 100%;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
 }
 
 #board {
@@ -210,7 +219,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-size: clamp(1.25rem, 4.4vw, 1.8rem);
   font-weight: 700;
   text-transform: uppercase;
   border: 2px solid var(--tile-border-color);
@@ -222,6 +231,7 @@ body {
   aspect-ratio: 1;
   border-radius: 2px;
   line-height: 1;
+  padding: 4px;
 }
 
 .wordle-tile.has-letter {
@@ -291,8 +301,8 @@ body {
 
 /* ---------- Solver Results ---------- */
 #solver-panel {
-  width: 100%;
-  max-width: min(350px, 90vw);
+  width: var(--panel-width);
+  max-width: var(--panel-width);
   flex-shrink: 0;
   display: none;
   flex-direction: column;
@@ -330,9 +340,12 @@ body {
 }
 
 .solver-row {
+  width: 100%;
+  max-height: var(--solver-max-height);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
+  align-items: stretch;
 }
 
 /* Responsive: Stack solver on mobile */
@@ -343,10 +356,16 @@ body {
 }
 
 .solver-box {
+  width: 100%;
+  max-height: var(--solver-max-height);
   background: var(--color-tone-5);
   border-radius: 8px;
   padding: 8px 10px;
   min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .solver-box h4 {
@@ -359,7 +378,10 @@ body {
 }
 
 #possible-words-list {
-  max-height: 80px;
+  flex: 0 1 auto;
+  height: auto;
+  min-height: 0;
+  max-height: 250px;
   overflow-y: auto;
   font-size: 0.8rem;
   line-height: 1.6;
@@ -369,10 +391,27 @@ body {
   flex-wrap: wrap;
   gap: 2px 6px;
   scrollbar-width: thin;
+  scrollbar-color: var(--color-correct) var(--color-tone-4);
 }
 
-#possible-words-list::-webkit-scrollbar { width: 4px; }
-#possible-words-list::-webkit-scrollbar-thumb { background: var(--color-tone-4); border-radius: 2px; }
+#possible-words-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#possible-words-list::-webkit-scrollbar-track {
+  background: var(--color-tone-4);
+  border-radius: 8px;
+}
+
+#possible-words-list::-webkit-scrollbar-thumb {
+  background: var(--color-correct);
+  border: 2px solid var(--color-tone-4);
+  border-radius: 8px;
+}
+
+#possible-words-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-correct-dark);
+}
 
 .possible-word {
   cursor: default;
@@ -387,6 +426,21 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  max-height: 264px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-correct) var(--color-tone-4);
+}
+
+#best-guess-area::-webkit-scrollbar { width: 8px; }
+#best-guess-area::-webkit-scrollbar-track {
+  background: var(--color-tone-4);
+  border-radius: 8px;
+}
+#best-guess-area::-webkit-scrollbar-thumb {
+  background: var(--color-correct);
+  border: 2px solid var(--color-tone-4);
+  border-radius: 8px;
 }
 
 .best-guess-item {
@@ -435,15 +489,16 @@ body {
 
 /* ---------- First Guess Lock ---------- */
 #first-guess-bar {
-  width: 100%;
-  max-width: min(350px, 90vw);
+  width: var(--panel-width);
+  max-width: var(--panel-width);
+  min-height: 0;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 6px;
   background: var(--color-tone-5);
   border-radius: 8px;
-  padding: 6px 10px;
+  padding: 4px 10px;
   font-size: 0.72rem;
   flex-wrap: wrap;
 }
@@ -477,13 +532,14 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
   border-radius: 4px;
   padding: 2px 6px;
   font-size: 0.8rem;
-  width: 65px;
+  width: auto;
+  min-width: 80px;
+  flex: 1 1 100px;
   text-transform: uppercase;
   color: var(--color-tone-1);
   font-family: var(--font-family);
   font-weight: 700;
   letter-spacing: 0.1em;
-  flex-shrink: 0;
 }
 
 #first-guess-input:focus { outline: 2px solid var(--color-correct); }
@@ -494,6 +550,7 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
   gap: 4px;
   flex-wrap: wrap;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .fg-btn {
@@ -526,57 +583,21 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
 
 
 /* ---------- Keyboard ---------- */
-#keyboard {
-  width: 100%;
-  max-width: min(420px, 95vw);
-  flex-shrink: 0;
-  padding: 0 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
+#mobile-input-row {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.keyboard-row {
-  display: flex;
-  gap: 5px;
-  width: 100%;
-  justify-content: center;
-}
-
-.key {
-  height: clamp(42px, 8.5vw, 58px);
-  min-width: 0;
-  border-radius: 4px;
-  border: none;
-  background: var(--key-bg);
-  color: var(--key-text);
-  font-family: var(--font-family);
-  font-size: clamp(0.7rem, 2.4vw, 0.9rem);
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-transform: uppercase;
-  flex: 1 1 0;
-  max-width: none;
+#mobile-guess-input {
+  width: 1px;
+  height: 1px;
+  border: 0;
   padding: 0;
-  transition: background 0.1s, color 0.1s, opacity 0.1s;
-  user-select: none;
-  letter-spacing: 0.01em;
 }
-
-.key.wide {
-  flex: 1.5 1 0;
-  max-width: none;
-}
-
-.key.is-gray { background: var(--color-absent); color: #fff; }
-.key.is-yellow { background: var(--color-present); color: #fff; }
-.key.is-green { background: var(--color-correct); color: #fff; }
-
-.key:active { opacity: 0.7; }
 
 /* ---------- Toast ---------- */
 #toast-container {
@@ -946,14 +967,6 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
     padding: 2px;
   }
 
-  .key {
-    height: clamp(36px, 6vw, 48px);
-    min-width: clamp(26px, 5.5vw, 36px);
-  }
-
-  .key.wide {
-    min-width: clamp(38px, 8vw, 55px);
-  }
 }
 
 @media (max-width: 480px) {
@@ -966,10 +979,8 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
 
   #board-container,
   #first-guess-bar,
-  #solver-panel,
-  #keyboard {
-    max-width: 420px;
-    width: 100%;
+  #solver-panel {
+    max-width: min(420px, calc(100vw - 12px));
   }
 
   #board {
@@ -980,8 +991,8 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
 
   #first-guess-bar {
     flex-wrap: wrap;
-    padding: 5px 8px;
-    gap: 4px;
+    padding: 4px 8px;
+    gap: 3px 4px;
     font-size: 0.65rem;
   }
 
@@ -1013,7 +1024,6 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
   }
 
   #possible-words-list {
-    max-height: 60px;
     font-size: 0.75rem;
   }
 
@@ -1056,4 +1066,3 @@ html[data-first-guess-enabled="false"] #first-guess-bar {
     font-size: 0.55rem;
   }
 }
-
