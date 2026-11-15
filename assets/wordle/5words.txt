@@ -34,6 +34,7 @@ after
 again
 agape
 agate
+agave
 agent
 agile
 aging
@@ -588,6 +589,7 @@ dolly
 donor
 donut
 dopey
+dorky
 doubt
 dough
 dowdy
@@ -1445,6 +1447,7 @@ penal
 pence
 penne
 penny
+peony
 perch
 peril
 perky
@@ -1774,6 +1777,7 @@ shark
 sharp
 shave
 shawl
+sheaf
 shear
 sheen
 sheep
@@ -1882,6 +1886,7 @@ snail
 snake
 snaky
 snare
+snark
 snarl
 sneak
 sneer
@@ -1989,6 +1994,7 @@ steel
 steep
 steer
 stein
+stent
 stern
 stick
 stiff
@@ -2245,6 +2251,7 @@ untie
 until
 unwed
 unzip
+upend
 upper
 upset
 urban
@@ -2395,4 +2402,5 @@ young
 youth
 zebra
 zesty
+zilch
 zonal
