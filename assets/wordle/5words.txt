@@ -1141,6 +1141,7 @@ lathe
 latte
 laugh
 layer
+layup
 leach
 leafy
 leaky
@@ -1628,6 +1629,7 @@ reign
 relax
 relay
 relic
+remap
 remit
 remix
 renal
@@ -2307,6 +2309,7 @@ vomit
 voter
 vouch
 vowel
+vroom
 vying
 wacky
 wafer
